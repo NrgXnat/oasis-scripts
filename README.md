@@ -46,19 +46,9 @@ tr -d '\r' < myfile.csv > myfile_unix.csv
 
 Install `dos2unix` as follows:
 
-On CentOS, Fedora, or RHEL, run
-```
-sudo yum install dos2unix
-```
+On CentOS, Fedora, or RHEL, run `sudo yum install dos2unix`
 
-On Ubuntu or Debian, run 
-```
-sudo apt-get install tofrodos
-```
-and then 
-```
-sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix
-```
+On Ubuntu or Debian, run `sudo apt-get install tofrodos` and then `sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix`
 
 Once dos2unix is available, run 
 ```
