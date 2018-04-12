@@ -35,7 +35,7 @@ directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 
 ### Note on Unix file formatting
 
-The comma-separated file you send to the script must be Unix-formatted. If it is not, you will receive "Illegal character" errors when you run the script. To do this, you can use one of the following options:
+The comma-separated file you send to the script must be Unix-formatted - the file must not have Microsoft Windows line endings. If the file is incorrectly formatted, you will receive "Illegal character" errors when you run the script. To do this, you can use one of the following options:
 
 #### Using `tr`
 ```
