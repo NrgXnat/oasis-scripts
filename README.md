@@ -31,3 +31,29 @@ directory_name/OAS30001_MR_d0129/anat1/file.nii.gz
 directory_name/OAS30001_MR_d0129/anat4/file.json
 directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 ```
+
+
+### Note on Unix file formatting
+
+The comma-separated file you send to the script must be Unix-formatted. If it is not, you will receive "Illegal character" errors when you run the script. To do this, you can use one of the following options:
+
+#### Using `tr`
+```
+tr -d '\r' < myfile.csv > myfile_unix.csv
+```
+
+#### Using `dos2unix`
+
+Install `dos2unix` as follows:
+
+On CentOS, Fedora, or RHEL, run `sudo yum install dos2unix`
+On Ubuntu or Debian, run `sudo apt-get install tofrodos` and then `sudo ln -s /usr/bin/fromdos /usr/bin/dos2unix`
+
+Once dos2unix is available, run 
+```
+dos2unix myfile.csv
+```
+
+#### Using Microsoft Notepad
+
+When saving a comma-separated file in Microsoft Excel, select "Save As" and choose "CSV (Comma Delimited) (*.csv)". Then open the file using Microsoft Notepad, and in Notepad select "Save As", and under "Encoding" choose "UTF-8".
