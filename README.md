@@ -32,10 +32,57 @@ directory_name/OAS30001_MR_d0129/anat4/file.json
 directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 ```
 
+### Detailed instructions on how to run this script
+
+To run this script, follow the steps below.
+
+1. Download the script from this Github repository by clicking "Clone or download" and choose Download ZIP. This will download a zip file containing all the scripts in the repository and this README file. 
+
+2. Extract the .zip file onto your local computer and move the download_oasis_scripts.sh (or whichever script file you would like to use) into the folder you will be working from.
+
+3. Download or create a CSV of OASIS experiment IDs to use as an input to the script. This can be created from a search result table on XNAT Central, described on the XNAT Wiki on the [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html) page. Use **Options** then **Edit Columns** to include the "MR ID" column in your column view. Downloading the resulting table by selecting **Options** then **Spreadsheet**. Once you download a spreadsheet, remove all columns from it except for the "MR ID" column and save it as a .csv file. This can be done In Microsoft Excel by selecting Save As and choosing "CSV (Comma delimited) *.csv" as the file type. 
+
+If you save a file using Microsoft Excel, you must convert it to Unix format before using it as input to a script. If the file is incorrectly formatted, you will receive "Illegal character" errors when you run the script. Instructions for doing this conversion can be found in the "[Note on Unix file formatting](https://github.com/NrgXnat/oasis-scripts#note-on-unix-file-formatting)" section of this README. 
+
+Move the resulting csv file into the same folder as the script.
+
+4. Create an empty directory in the same folder as your script and make a note of its name. This is the directory where your scan files will be downloaded to. 
+
+5. Go into your command line. On Windows you can use a terminal system like [MobaXTerm](https://mobaxterm.mobatek.net/). If you're using a Mac you can use Terminal. Change directories to the folder your scripts and empty folder are in using the `cd` command.
+
+6. Run the download_oasis_scans script using the following command:
+
+```
+./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
+```
+
+Where <input_file.csv> is the name of the file containing the list of OASIS experiment IDs, <directory_name> is the name of your empty directory, <xnat_central_username> is your XNAT Central username, and <scan_type> is the scan type you would like to download. Adding scan_type is optional, and without it all the scans will be downloaded. If you choose to include the scan type option, choose from the [list of available scan types](https://github.com/NrgXnat/oasis-scripts#list-of-available-scan-types) below. You can enter a single scan type such as `T1w`, a comma-separated list with no spaces such as `T1w,T2w,FLAIR`, or leave it out completely. A couple of example commands:
+
+```
+# Download T1w, T2w, and FLAIR scans from the sessions listed in myfile.csv
+./download_oasis_scans.sh myfile.csv downloaded_files xnatuser T1w,T2w,FLAIR
+
+# Download all scans from the sessions listed in myfile.csv
+./download_oasis_scans.sh myfile.csv downloaded_files xnatuser
+
+```
+
+The files for the scans from each experiment ID in your list should begin downloading.
+
+
+### List of available scan type names
+
+When entering `scan_type` into your script, use any of the following names: `angio`, `asl`, `bold`, `dwi`, `fieldmap`, `FLAIR`, `GRE`, `minIP`, `swi`, `T1w`, `T2star`, `T2w`
+For more information on these scan types, see the [OASIS Imaging Data Dictionary](https://www.oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v1.5.pdf). 
 
 ### Note on Unix file formatting
 
-The comma-separated file you send to the script must be Unix-formatted - the file must not have Microsoft Windows line endings. If the file is incorrectly formatted, you will receive "Illegal character" errors when you run the script. To do this, you can use one of the following options:
+The comma-separated file you send to the script must be Unix-formatted - the file must not have Microsoft Windows line endings. If the file is incorrectly formatted, you will receive "Illegal character" errors when you run the script. To fix this, you can use one of the following options:
+
+
+#### Using Microsoft Notepad
+
+When saving a comma-separated file in Microsoft Excel, select "Save As" and choose "CSV (Comma Delimited) (*.csv)". Then open the file using Microsoft Notepad, and in Notepad select "Save As", and under "Encoding" choose "UTF-8".
 
 #### Using `tr`
 ```
@@ -54,7 +101,3 @@ Once dos2unix is available, run
 ```
 dos2unix myfile.csv
 ```
-
-#### Using Microsoft Notepad
-
-When saving a comma-separated file in Microsoft Excel, select "Save As" and choose "CSV (Comma Delimited) (*.csv)". Then open the file using Microsoft Notepad, and in Notepad select "Save As", and under "Encoding" choose "UTF-8".
