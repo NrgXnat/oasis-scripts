@@ -7,6 +7,9 @@ This repository contains scripts that can be used to download files from the OAS
 
 This script downloads scans of a specified type and organizes the files. 
 
+Use `download_oasis_scans.sh` if you are on Linux or Mac and have the `zip` program installed. Use `download_oasis_scans_tar.sh` if you are using MobaXTerm on Windows or if you do not have the `zip` program installed on your machine (requires `tar` instead).
+
+
 Usage: 
 ```
 ./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
