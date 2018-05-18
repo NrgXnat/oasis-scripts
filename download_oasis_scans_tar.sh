@@ -6,7 +6,7 @@
 #
 # Usage: ./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
 # 
-# Download scans of a specified type from OASIS3 on XNAT Central and organize the files
+# Download scans of a specified type from OASIS3 on XNAT Central and organize the files - uses "tar" instead of "zip"
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for experiment_id 
@@ -131,51 +131,9 @@ else
             rm -r $DIRNAME/$EXPERIMENT_ID/scans
 
         fi
-        # # Check the zip file to make sure we downloaded something
-        # # If the zip file is invalid, we didn't download a scan so there is probably no scan of that type
-        # # If the zip file is valid, unzip and rearrange the files
-        # if zip -Tq $DIRNAME/$EXPERIMENT_ID.zip > /dev/null; then
-        #     # We found a successfully downloaded valid zip file
 
-        #     if ! [ $SCANTYPE = "ALL" ]
-        #     then
-        #         echo "Found a ${SCANTYPE} scan for ${EXPERIMENT_ID}."
-        #     else
-        #         echo "Downloaded all scans for ${EXPERIMENT_ID}."
-        #     fi  
-
-        #     echo "Unzipping scan(s) and rearranging files."
-
-        #     # Unzip the downloaded file
-        #     unzip $DIRNAME/$EXPERIMENT_ID.zip -d $DIRNAME
-
-        #     # Rearrange the files so there are fewer subfolders
-        #     # Ends up like this:
-        #     # directory_name/OAS30001_MR_d0129/anat1/file.json
-        #     # directory_name/OAS30001_MR_d0129/anat1/file.nii.gz
-        #     for single_scan in $DIRNAME/$EXPERIMENT_ID/scans/*/ ; do
-        #         if [ -d ${single_scan} ]; then
-        #             scan_name_all=`echo $single_scan | rev | cut -d/ -f2 | rev`
-        #             scan_name=`echo $scan_name_all | cut -d- -f1`
-
-        #             mkdir $DIRNAME/$EXPERIMENT_ID/$scan_name
-        #             mv $DIRNAME/$EXPERIMENT_ID/scans/$scan_name_all/resources/*/files/* $DIRNAME/$EXPERIMENT_ID/$scan_name/.
-        #         fi
-        #     done
-
-        #     # Remove the empty scans folder that the files were moved from
-        #     rm -r $DIRNAME/$EXPERIMENT_ID/scans
-        # else
-        #     if ! [ $SCANTYPE = "ALL" ]
-        #     then
-        #         echo "Did not find a ${SCANTYPE} scan for ${EXPERIMENT_ID}."
-        #     else
-        #         echo "Could not download all scans for ${EXPERIMENT_ID}."
-        #     fi            
-        # fi
-
-        # # Remove the original zip file
-        # rm $DIRNAME/$EXPERIMENT_ID.zip
+        # # Remove the original tar.gz file
+        rm $DIRNAME/$EXPERIMENT_ID.tar.gz
 
         echo "Done with ${EXPERIMENT_ID}."
 
