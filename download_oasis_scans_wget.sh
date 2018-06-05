@@ -1,12 +1,12 @@
 #!/bin/sh
 #
 #================================================================
-# download_oasis_scans_tar.sh
+# download_oasis_scans_wget.sh
 #================================================================
 #
 # Usage: ./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
 # 
-# Download scans of a specified type from OASIS3 on XNAT Central and organize the files - uses "tar" instead of "zip"
+# Download scans of a specified type from OASIS3 on XNAT Central and organize the files - uses "wget" instead of "curl"
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for experiment_id 
