@@ -19,7 +19,7 @@ Required inputs:
 
 `<input_file.csv>` - A Unix formatted, comma-separated file containing a column for experiment_id (e.g. OAS30001_MR_d0129)
 
-`<directory_name>` - A directory path (relative or absolute) to save the scan files to
+`<directory_name>` - A directory path (relative or absolute) to save the scan files to. If this directory doesn't exist when you run the script, it will be created automatically.
 
 `<xnat_central_username>` - Your XNAT Central username used for accessing OASIS data on central.xnat.org (you will be prompted for your password before downloading)
 
@@ -51,7 +51,7 @@ Move the resulting csv file into the same folder as the script.
 
 4. Create an empty directory in the same folder as your script and make a note of its name. This is the directory where your scan files will be downloaded to. 
 
-5. Go into your command line. On Windows you can use a terminal system like [MobaXTerm](https://mobaxterm.mobatek.net/). If you're using a Mac you can use Terminal. Change directories to the folder your scripts and empty folder are in using the `cd` command.
+5. Go into your command line. On Windows you can use a terminal system like [MobaXTerm](https://mobaxterm.mobatek.net/). If you're using a Mac you can use Terminal. Make sure you are **not** running the script while logged in as the root user. Change directories to the folder your scripts and empty folder are in using the `cd` command.
 
 6. Run the download_oasis_scans script using the following command:
 
