@@ -59,6 +59,12 @@ else
         SCANTYPE=ALL
     fi
 
+    # Create the directory if it doesn't exist yet
+    if [ ! -d $DIRNAME ]
+    then
+        mkdir $DIRNAME
+    fi
+
     # Read in password
     read -s -p "Enter your password for accessing OASIS data on XNAT Central:" PASSWORD
 
