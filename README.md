@@ -7,7 +7,7 @@ This repository contains scripts that can be used to download files from the OAS
 
 This script downloads scans of a specified type and organizes the files. 
 
-Use `download_oasis_scans.sh` if you are on Linux or Mac and have the `zip` program installed. Use `download_oasis_scans_tar.sh` if you are using MobaXTerm on Windows or if you do not have the `zip` program installed on your machine (requires `tar` instead).
+Use `download_oasis_scans.sh` if you are on Linux or Mac and have the `zip` program installed. Use `download_oasis_scans_tar.sh` if you are using MobaXTerm on Windows or if you do not have the `zip` program installed on your machine (requires `tar` instead). If you have problems with using the `curl` program (If you see errors that say CURL in them), use `download_oasis_scans_wget.sh`.
 
 
 Usage: 
@@ -77,6 +77,33 @@ The files for the scans from each experiment ID in your list should begin downlo
 
 When entering `scan_type` into your script, use any of the following names: `angio`, `asl`, `bold`, `dwi`, `fieldmap`, `FLAIR`, `GRE`, `minIP`, `swi`, `T1w`, `T2star`, `T2w`
 For more information on these scan types, see the [OASIS Imaging Data Dictionary](https://www.oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v1.5.pdf). 
+
+
+## freesurfer/download_oasis_freesurfer.sh 
+
+The scripts contained in the `freesurfer` folder can be used to download Freesurfer data and organize the files.
+
+Use `download_oasis_freesurfer.sh` if you are on Linux or Mac and have the `zip` program installed. Use `download_oasis_freesurfer_tar.sh` if you are using MobaXTerm on Windows or if you do not have the `zip` program installed on your machine (requires `tar` instead). If you have problems with using the `curl` program (If you see errors that say CURL in them), use `download_oasis_freesurfer_wget.sh`. 
+
+
+Usage: 
+```
+./download_oasis_freesurfer.sh <input_file.csv> <directory_name> <xnat_central_username>
+```
+
+Required inputs:
+
+`<input_file.csv>` - A Unix formatted, comma-separated file containing a column for freesurfer_id (e.g. OAS30001_Freesurfer53_d0129)
+
+`<directory_name>` - A directory path (relative or absolute) to save the scan files to. If this directory doesn't exist when you run the script, it will be created automatically.
+
+`<xnat_central_username>` - Your XNAT Central username used for accessing OASIS data on central.xnat.org (you will be prompted for your password before downloading)
+
+
+This script organizes the files into folders such that the directory `directory name/OAS30001_MR_d0129/` will contain all the Freesurfer data folders. 
+
+**NOTES:** Since the Freesurfer is linked with the MR ID, saving a Freesurfer and MR Scan folder in the same directory will cause both to be saved in a folder named (for example) OAS30001_MR_d0129. Make sure that you save your Freesurfer folders in a separate directory from the MR scans to prevent confusion and errors. Additionally, this Freesurfer download script will not differentiate between versions of Freesurfer. You will need to keep track of Freesurfer version when you create your ID list (whether the ID contains Freesurfer53, Freesurfer51, or Freesurfer50). 
+
 
 ### Note on Unix file formatting
 
