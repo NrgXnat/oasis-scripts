@@ -1,7 +1,25 @@
-# oasis-scripts
+# Table of Contents
+
+- [OASIS3 Scripts Overview](#oasis3-scripts-overview)
+- [Downloading MR and PET Scan files](#downloading-mr-and-pet-scan-files)
+  * [download_oasis_scans.sh](#download-oasis-scanssh)
+    + [Detailed instructions on how to run this script](#detailed-instructions-on-how-to-run-this-script)
+    + [List of available scan type names](#list-of-available-scan-type-names)
+- [Downloading Freesurfer files](#downloading-freesurfer-files)
+  * [freesurfer/download_oasis_freesurfer.sh](#freesurfer-download-oasis-freesurfersh)
+- [Creating a CSV file for use with these scripts](#creating-a-csv-file-for-use-with-these-scripts)
+    + [Note on Unix file formatting](#note-on-unix-file-formatting)
+      - [Using Microsoft Notepad](#using-microsoft-notepad)
+      - [Using `tr`](#using--tr-)
+      - [Using `dos2unix`](#using--dos2unix-)
+
+
+# OASIS3 Scripts Overview
 
 This repository contains scripts that can be used to download files from the OASIS3 project on XNAT Central. In order to access the OASIS data you must have signed the [OASIS Data Use Agreement](https://www.oasis-brains.org) and have access to the OASIS3 project on XNAT Central at [central.xnat.org](https://www.central.xnat.org). 
 
+
+# Downloading MR and PET Scan files
 
 ## download_oasis_scans.sh 
 
@@ -79,6 +97,8 @@ When entering `scan_type` into your script, use any of the following names: `ang
 For more information on these scan types, see the [OASIS Imaging Data Dictionary](https://www.oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v1.5.pdf). 
 
 
+# Downloading Freesurfer files
+
 ## freesurfer/download_oasis_freesurfer.sh 
 
 The scripts contained in the `freesurfer` folder can be used to download Freesurfer data and organize the files.
@@ -104,6 +124,8 @@ This script organizes the files into folders such that the directory `directory 
 
 **NOTES:** Since the Freesurfer is linked with the MR ID, saving a Freesurfer and MR Scan folder in the same directory will cause both to be saved in a folder named (for example) OAS30001_MR_d0129. Make sure that you save your Freesurfer folders in a separate directory from the MR scans to prevent confusion and errors. Additionally, this Freesurfer download script will not differentiate between versions of Freesurfer. You will need to keep track of Freesurfer version when you create your ID list (whether the ID contains Freesurfer53, Freesurfer51, or Freesurfer50). 
 
+
+# Creating a CSV file for use with these scripts
 
 ### Note on Unix file formatting
 
