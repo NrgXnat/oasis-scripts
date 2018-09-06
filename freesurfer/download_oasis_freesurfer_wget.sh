@@ -86,7 +86,7 @@ else
             echo "Unzipping Freesurfer and rearranging files."
 
             # Untar the downloaded file
-            tar -xzvC $DIRNAME -f $DIRNAME/$FREESURFER_ID.zip
+            tar -xzvC $DIRNAME -f $DIRNAME/$FREESURFER_ID.tar.gz
 
             # Rearrange the files so there are fewer subfolders
             # Move the main Freesurfer subfolder up 5 levels

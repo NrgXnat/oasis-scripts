@@ -76,7 +76,7 @@ else
         # Set up the download URL and make a cURL call to download the requested scans in zip format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
 
-        curl -k -b JSESSIONID=$JSESSION -o $DIRNAME/$FREESURFER_ID.zip $download_url
+        curl -k -b JSESSIONID=$JSESSION -o $DIRNAME/$FREESURFER_ID.tar.gz $download_url
 
         # Check the zip file to make sure we downloaded something
         # If the zip file is invalid, we didn't download a scan so there is probably no scan of that type
@@ -89,7 +89,7 @@ else
             echo "Unzipping Freesurfer and rearranging files."
 
             # Untar the downloaded file
-            tar -xzvC $DIRNAME -f $DIRNAME/$FREESURFER_ID.zip
+            tar -xzvC $DIRNAME -f $DIRNAME/$FREESURFER_ID.tar.gz
 
             # Rearrange the files so there are fewer subfolders
             # Move the main Freesurfer subfolder up 5 levels
