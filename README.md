@@ -61,9 +61,7 @@ To run this script, follow the steps below.
 
 2. Extract the .zip file onto your local computer and move the download_oasis_scripts.sh (or whichever script file you would like to use) into the folder you will be working from.
 
-3. Download or create a CSV of OASIS experiment IDs to use as an input to the script. This can be created from a search result table on XNAT Central, described on the XNAT Wiki on the [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html) page. Use **Options** then **Edit Columns** to include the "MR ID" column in your column view. Downloading the resulting table by selecting **Options** then **Spreadsheet**. Once you download a spreadsheet, remove all columns from it except for the "MR ID" column and save it as a .csv file. This can be done In Microsoft Excel by selecting Save As and choosing "CSV (Comma delimited) *.csv" as the file type. 
-
-If you save a file using Microsoft Excel, you must convert it to Unix format before using it as input to a script. If the file is incorrectly formatted, you will receive "Illegal character" errors when you run the script. Instructions for doing this conversion can be found in the "[Note on Unix file formatting](https://github.com/NrgXnat/oasis-scripts#note-on-unix-file-formatting)" section of this README. 
+3. Download or create a CSV of OASIS experiment IDs to use as an input to the script. Instructions for this can be found in the "[Creating a CSV file](#creating-a-csv-file-for-use-with-these-scripts)" section of this README. 
 
 Move the resulting csv file into the same folder as the script.
 
@@ -127,14 +125,22 @@ This script organizes the files into folders such that the directory `directory 
 
 # Creating a CSV file for use with these scripts
 
+When you run any of the scripts, you will need to download or create a CSV of OASIS experiment IDs or Freesurfer IDs to use as an input to the script. This can be created from a search result table on XNAT Central, described on the XNAT Wiki on the [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html) page. 
+
+- From an MR Session search, use **Options** then **Edit Columns** to include the "MR ID" column in your column view. If you are doing a PET Session search, include the "PET ID" column. If you are downloading Freesurfer files, use the Freesurfer tab from the OASIS project page, or do an Advanced Search for Freesurfers and specify the OASIS3 project. Then include the "Freesurfer ID" column in your column view.
+- Download the resulting table by selecting **Options** then **Spreadsheet**. 
+- Once you download a spreadsheet, remove all columns from it except for the "MR ID" column and save it as a .csv file. This can be done In Microsoft Excel by selecting Save As and choosing "CSV (Comma delimited) \*.csv" as the file type. 
+- If you save a file using Microsoft Excel, you must convert it to Unix format before using it as input to a script. If the file is incorrectly formatted, you may experience errors or download failures when you run the script. Instructions for doing this conversion are below.
+
+
 ### Note on Unix file formatting
 
-The comma-separated file you send to the script must be Unix-formatted - the file must not have Microsoft Windows line endings. If the file is incorrectly formatted, you will receive "Illegal character" errors when you run the script. To fix this, you can use one of the following options:
+The comma-separated file you send to the script must be Unix-formatted - the file must not have Microsoft Windows line endings. If the file is incorrectly formatted, you may receive "Illegal character" errors when you run the script, or see "\\r" characters in the script output and experience download failures. To fix this, you can use one of the following options:
 
 
 #### Using Microsoft Notepad
 
-When saving a comma-separated file in Microsoft Excel, select "Save As" and choose "CSV (Comma Delimited) (*.csv)". Then open the file using Microsoft Notepad, and in Notepad select "Save As", and under "Encoding" choose "UTF-8".
+When saving a comma-separated file in Microsoft Excel, select "Save As" and choose "CSV (Comma Delimited) (\*.csv)". Then open the file using Microsoft Notepad, and in Notepad select "Save As", and under "Encoding" choose "UTF-8".
 
 #### Using `tr`
 ```
