@@ -70,14 +70,14 @@ else
 
         echo "Checking for Freesurfer ID ${FREESURFER_ID} associated with ${EXPERIMENT_LABEL}."
 
-        # Set up the download URL and make a cURL call to download the requested scans in zip format
+        # Set up the download URL and make a wget call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
 
         wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$FREESURFER_ID.tar.gz "$download_url"
 
-        # Check the zip file to make sure we downloaded something
-        # If the zip file is invalid, we didn't download a scan so there is probably no scan of that type
-        # If the zip file is valid, unzip and rearrange the files
+        # Check the tar.gz file to make sure we downloaded something
+        # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
+        # If the tar.gz file is valid, untar and rearrange the files
         if tar tf $DIRNAME/$FREESURFER_ID.tar.gz &> /dev/null; then
             # We found a successfully downloaded valid tar.gz  file
 
