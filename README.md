@@ -27,7 +27,7 @@ This repository contains scripts that can be used to download files from the OAS
 
 This script downloads scans of a specified type and organizes the files. 
 
-Use `download_oasis_scans.sh` if you are on Linux or Mac and have the `zip` program installed. Use `download_oasis_scans_tar.sh` if you are using MobaXTerm on Windows or if you do not have the `zip` program installed on your machine (requires `tar` instead). If you have problems with using the `curl` program (If you see errors that say CURL in them), use `download_oasis_scans_wget.sh`.
+Use `download_oasis_scans.sh` if you are on Linux or Mac and have the `zip` program installed. Use `download_oasis_scans_tar.sh` if you are using MobaXTerm on Windows or if you do not have the `zip` program installed on your machine (requires `tar` instead). If you have problems with using the `curl` program (For example, if you see errors that say CURL in them), use `download_oasis_scans_wget.sh`. To download in BIDS format, see the section below.
 
 
 Usage: 
@@ -55,7 +55,28 @@ directory_name/OAS30001_MR_d0129/anat4/file.json
 directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 ```
 
-### Detailed instructions on how to run this script
+# Downloading MR and PET Scan files in BIDS format
+
+## download_oasis_scans_bids.sh 
+
+This script downloads scans from OASIS and organizes the files into Brain Imaging Data Structure (BIDS) format (See the [BIDS website](https://bids.neuroimaging.io/) and the [BIDS file specification](https://bids.neuroimaging.io/bids_spec.pdf) for more details on the BIDS format). 
+
+The `download_oasis_scans_bids.sh` will work if you are able to use `wget` and `tar`.
+
+This script organizes the files into folders like this:
+
+```
+directory_name/sub-subjectname/ses-sessionname/anat/sub-subjectname_T1w.json
+directory_name/sub-subjectname/ses-sessionname/anat/sub-subjectname_T1w.nii.gz
+directory_name/sub-subjectname/ses-sessionname/anat/sub-subjectname_T2w.json
+directory_name/sub-subjectname/ses-sessionname/anat/sub-subjectname_T2w.nii.gz
+directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.json
+directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
+```
+
+See below for more details on how to run the script.
+
+### Detailed instructions on how to run these scripts
 
 To run this script, follow the steps below.
 
