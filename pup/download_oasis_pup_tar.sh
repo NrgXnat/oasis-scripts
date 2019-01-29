@@ -99,14 +99,14 @@ else
             # Ends up like this:
             # directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/pet_files
             # directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/etc
-            mkdir $DIRNAME/$PUP_ID
-            mv $DIRNAME/$PUP_ID/assessors/$PUP_ID/DATA/pet_proc/* $DIRNAME/$PUP_ID
+            mkdir -p $DIRNAME/$PUP_ID
+            mv $DIRNAME/$PUP_ID/out/resources/DATA/files/pet_proc/* $DIRNAME/$PUP_ID
 
-            # do this so we don't have to use rm -rf. 
-            rmdir $DIRNAME/$PUP_ID/assessors/$PUP_ID/DATA/pet_proc
-            rmdir $DIRNAME/$PUP_ID/assessors/$PUP_ID/DATA
-            rmdir $DIRNAME/$PUP_ID/assessors/$PUP_ID
-            rmdir $DIRNAME/$PUP_ID/assessors
+            # Change permissions on the output files
+            chmod -R u=rwX,g=rwX $DIRNAME/$PUP_ID/*
+
+            # Remove the unzipped directory structure
+            rm -rf $DIRNAME/$PUP_ID/out
 
             # Remove the Freesurfer tar.gz file that the files were moved from
             rm -r $DIRNAME/$PUP_ID.tar.gz

@@ -98,6 +98,9 @@ else
             # directory_name/OAS30001_MR_d0129/etc
             mv $DIRNAME/$FREESURFER_ID/out/resources/DATA/files/* $DIRNAME/.
 
+            # Change permissions on the output files
+            chmod -R u=rwX,g=rwX $DIRNAME/*
+
             # do this so we don't have to use rm -rf. 
             rmdir $DIRNAME/$FREESURFER_ID/out/resources/DATA/files
             rmdir $DIRNAME/$FREESURFER_ID/out/resources/DATA

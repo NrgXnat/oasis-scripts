@@ -127,6 +127,9 @@ else
 
                     mkdir $DIRNAME/$EXPERIMENT_ID/$scan_name
                     mv $DIRNAME/$EXPERIMENT_ID/scans/$scan_name_all/resources/*/files/* $DIRNAME/$EXPERIMENT_ID/$scan_name/.
+
+                    # Change permissions on the output files
+                    chmod -R u=rwX,g=rwX $DIRNAME/$EXPERIMENT_ID/$scan_name/*                    
                 fi
             done
 

@@ -174,6 +174,9 @@ function move_to_bids () {
                 mv $SCAN_FILE_PATH $new_path/.                        
             fi
 
+            # Change permissions on the output folder
+            chmod -R u=rwX,g=rwX $new_path
+
         done
 
 
@@ -324,6 +327,10 @@ else
                 dataset_description_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
 
                 wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
+
+                # Change permissions on the output file
+                chmod -R u=rwX,g=rwX $DIRNAME/$subject_folder/$session_folder/dataset_description.json
+
             else
                 if [ ! $SCANTYPE = "ALL" ]
                 then

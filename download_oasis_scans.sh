@@ -89,7 +89,7 @@ else
         # Set up the download URL and make a cURL call to download the requested scans in zip format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=zip
 
-        curl -k -b JSESSIONID=$JSESSION -o $DIRNAME/$EXPERIMENT_ID.zip $download_url
+        curl --sslv3 -k -b JSESSIONID=$JSESSION -o $DIRNAME/$EXPERIMENT_ID.zip $download_url
 
         # Check the zip file to make sure we downloaded something
         # If the zip file is invalid, we didn't download a scan so there is probably no scan of that type
@@ -120,6 +120,9 @@ else
 
                     mkdir $DIRNAME/$EXPERIMENT_ID/$scan_name
                     mv $DIRNAME/$EXPERIMENT_ID/scans/$scan_name_all/resources/*/files/* $DIRNAME/$EXPERIMENT_ID/$scan_name/.
+
+                    # Change permissions on the output files
+                    chmod -R u=rwX,g=rwX $DIRNAME/$EXPERIMENT_ID/$scan_name/*
                 fi
             done
 
