@@ -140,6 +140,9 @@ else
         # Remove the original zip file
         rm $DIRNAME/$EXPERIMENT_ID.zip
 
+        # Delete the JSESSION token - "log out"
+        curl -i -k -b JSESSIONID=${jsession} -X DELETE "https://central.xnat.org/data/JSESSION"
+
         echo "Done with ${EXPERIMENT_ID}."
 
     done < $INFILE

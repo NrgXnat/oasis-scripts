@@ -114,6 +114,9 @@ else
             echo "Could not download PUP ${PUP_ID} in ${EXPERIMENT_LABEL}."           
         fi
 
+        # Delete the JSESSION token - "log out"
+        curl -i -k -b JSESSIONID=${JSESSION} -X DELETE "https://central.xnat.org/data/JSESSION"
+
         echo "Done with ${PUP_ID}."
 
     done < $INFILE
