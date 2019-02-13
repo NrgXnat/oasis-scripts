@@ -46,6 +46,8 @@ if [ ${#@} == 0 ]; then
     echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"   
     echo "<scan_type>: (Optional) scan type you would like to download (e.g. T1w). You can also enter multiple comma-separated scan types (e.g. swi,T2w). Without this argument, all scans for the given experiment_id will be downloaded. "   
 else 
+    source functions.sh
+    bailOnWget
 
     # Get the input arguments
     INFILE=$1

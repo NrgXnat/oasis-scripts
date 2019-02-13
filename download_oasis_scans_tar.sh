@@ -70,11 +70,10 @@ else
 
     echo ""
 
+    COOKIE_JAR=$(startSession)
+
     # Read the file
     sed 1d $INFILE | while IFS=, read -r EXPERIMENT_ID; do
-
-        # Get a JSESSION for authentication to XNAT
-        JSESSION=`curl -k -s -u $USERNAME:$PASSWORD ""https://central.xnat.org/REST/JSESSION""` # get a session to authenticate with
 
         # Get the subject ID from the first part of the experiment ID (OAS30001 from ID OAS30001_MR_d0129)
         SUBJECT_ID=`echo $EXPERIMENT_ID | cut -d_ -f1`
@@ -89,7 +88,7 @@ else
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
-        curl -k -b JSESSIONID=$JSESSION -o $DIRNAME/$EXPERIMENT_ID.tar.gz $download_url
+        download $DIRNAME/$EXPERIMENT_ID.tar.gz $download_url
 
         # Check the tar.gz file to make sure we downloaded something
         # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
@@ -144,10 +143,10 @@ else
         # # Remove the original tar.gz file
         rm $DIRNAME/$EXPERIMENT_ID.tar.gz
 
-        # Delete the JSESSION token - "log out"
-        curl -i -k -b JSESSIONID=${JSESSION} -X DELETE "https://central.xnat.org/data/JSESSION"
-
         echo "Done with ${EXPERIMENT_ID}."
 
     done < $INFILE
+
+    endSession
+
 fi

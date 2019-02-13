@@ -56,6 +56,8 @@ else
 
     echo ""
 
+    COOKIE_JAR=$(startSession)
+
     # Read the file
     sed 1d $INFILE | while IFS=, read -r FREESURFER_ID; do
 
@@ -69,14 +71,12 @@ else
         EXPERIMENT_LABEL=${SUBJECT_ID}_MR_${DAYS_FROM_ENTRY}
 
         # Get a JSESSION for authentication to XNAT
-        JSESSION=`curl -k -s -u $USERNAME:$PASSWORD ""https://central.xnat.org/REST/JSESSION""` # get a session to authenticate with
-
         echo "Checking for Freesurfer ID ${FREESURFER_ID} associated with ${EXPERIMENT_LABEL}."
 
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
 
-        curl -k -b JSESSIONID=$JSESSION -o $DIRNAME/$FREESURFER_ID.tar.gz $download_url
+        download $DIRNAME/$FREESURFER_ID.tar.gz $download_url
 
         # Check the tar.gz file to make sure we downloaded something
         # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
@@ -114,10 +114,10 @@ else
             echo "Could not get Freesurfer ${FREESURFER_ID} in ${EXPERIMENT_LABEL}."           
         fi
 
-        # Delete the JSESSION token - "log out"
-        curl -i -k -b JSESSIONID=${JSESSION} -X DELETE "https://central.xnat.org/data/JSESSION"
-
         echo "Done with ${FREESURFER_ID}."
 
     done < $INFILE
+
+    endSession
+
 fi
