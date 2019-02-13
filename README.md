@@ -82,7 +82,7 @@ To run this script, follow the steps below.
 
 1. Download the script from this Github repository by clicking "Clone or download" and choose Download ZIP. This will download a zip file containing all the scripts in the repository and this README file. 
 
-2. Extract the .zip file onto your local computer and move the download_oasis_scripts.sh (or whichever script file you would like to use) into the folder you will be working from.
+2. Extract the .zip file onto your local computer and move the download_oasis_scripts.sh (or whichever script file you would like to use) into the folder you will be working from. Also make sure to move a copy of functions.sh to the folder where you will be working from.
 
 3. Download or create a CSV of OASIS experiment IDs to use as an input to the script. Instructions for this can be found in the "[Creating a CSV file](#creating-a-csv-file-for-use-with-these-scripts)" section of this README. 
 
