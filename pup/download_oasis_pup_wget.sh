@@ -39,6 +39,8 @@ if [ ${#@} == 0 ]; then
     echo "<directory_name>: Directory path to save Freesurfer files to"  
     echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"  
 else 
+    source functions.sh
+    bailOnWget
 
     # Get the input arguments
     INFILE=$1

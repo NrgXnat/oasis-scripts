@@ -249,6 +249,8 @@ else
 
     echo ""
 
+    COOKIE_JAR=$(startSession)
+
     # Read the file
     sed 1d $INFILE | while IFS=, read -r EXPERIMENT_ID; do
 
@@ -262,10 +264,10 @@ else
             echo "Downloading all scans for ${EXPERIMENT_ID}."
         fi
 
-        # Set up the download URL and make a wget call to download the requested scans in tar.gz format
+        # Set up the download URL and make a call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
-        wget -S --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
+        download $DIRNAME/$EXPERIMENT_ID.tar.gz $download_url
 
         # Check the tar.gz file to make sure we downloaded something
         # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
@@ -280,18 +282,17 @@ else
             rm -r $DIRNAME/$EXPERIMENT_ID
 
             # Grab the dataset_description file and put it in the session directory
-            # Set up the URL and make a wget call to download the dataset_description file
+            # Set up the URL and make a call to download the dataset_description file
             dataset_description_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
-
-            wget -S --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
+            download $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
 
         else
             # retry loop
-            # first retry - use wget --continue to continue a broken download
+            # first retry - use "curl --continue -" to continue a broken download
 
             echo "Downloaded an incomplete file for ${EXPERIMENT_ID}. Retrying (${retry_count} of 5 retries)."
 
-            wget -S --continue --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
+            continueDownload $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
 
             while ! tar tf $DIRNAME/$EXPERIMENT_ID.tar.gz &> /dev/null; do
                 
@@ -301,7 +302,7 @@ else
 
                     retry_count=$retry_count+1
 
-                    wget --continue --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
+                    continueDownload $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
 
                 else
                     break
@@ -323,10 +324,10 @@ else
                 rm -r $DIRNAME/$EXPERIMENT_ID
 
                 # Grab the dataset_description file and put it in the session directory
-                # Set up the URL and make a wget call to download the dataset_description file
+                # Set up the URL and make a call to download the dataset_description file
                 dataset_description_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
 
-                wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
+                download $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
 
                 # Change permissions on the output file
                 chmod -R u=rwX,g=rwX $DIRNAME/$subject_folder/$session_folder/dataset_description.json
@@ -348,4 +349,7 @@ else
         echo ""
 
     done < $INFILE
+
+    endSession
+
 fi

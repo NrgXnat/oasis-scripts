@@ -39,6 +39,7 @@ if [ ${#@} == 0 ]; then
     echo "<directory_name>: Directory path to save Freesurfer files to"  
     echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"  
 else 
+    source ../functions.sh
 
     # Get the input arguments
     INFILE=$1
@@ -56,6 +57,8 @@ else
 
     echo ""
 
+    COOKIE_JAR=$(startSession)
+
     # Read the file
     sed 1d $INFILE | while IFS=, read -r PUP_ID; do
 
@@ -71,15 +74,12 @@ else
         # combine to form the PET experiment label (OAS30001_AV45_d2430)
         EXPERIMENT_LABEL=${SUBJECT_ID}_${TRACER}_${DAYS_FROM_ENTRY}
 
-        # Get a JSESSION for authentication to XNAT
-        JSESSION=`curl -k -s -u $USERNAME:$PASSWORD ""https://central.xnat.org/REST/JSESSION""` # get a session to authenticate with
-
         echo "Checking for PUP ID ${PUP_ID} associated with ${EXPERIMENT_LABEL}."
 
         # Set up the download URL and make a cURL call to download the requested scans in zip format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${PUP_ID}/files?format=zip
 
-        curl -k -b JSESSIONID=$JSESSION -o $DIRNAME/$PUP_ID.zip $download_url
+        download $DIRNAME/$PUP_ID.zip $download_url
 
         # Check the zip file to make sure we downloaded something
         # If the zip file is invalid, we didn't download a scan so there is probably no scan of that type
@@ -114,10 +114,10 @@ else
             echo "Could not download PUP ${PUP_ID} in ${EXPERIMENT_LABEL}."           
         fi
 
-        # Delete the JSESSION token - "log out"
-        curl -i -k -b JSESSIONID=${JSESSION} -X DELETE "https://central.xnat.org/data/JSESSION"
-
         echo "Done with ${PUP_ID}."
 
     done < $INFILE
+
+    endSession
+
 fi

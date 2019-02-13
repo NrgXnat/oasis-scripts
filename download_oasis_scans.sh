@@ -46,6 +46,7 @@ if [ ${#@} == 0 ]; then
     echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"   
     echo "<scan_type>: (Optional) scan type you would like to download (e.g. T1w). You can also enter multiple comma-separated scan types (e.g. swi,T2w). Without this argument, all scans for the given experiment_id will be downloaded. "   
 else 
+    source functions.sh
 
     # Get the input arguments
     INFILE=$1
@@ -70,11 +71,10 @@ else
 
     echo ""
 
+    COOKIE_JAR=$(startSession)
+
     # Read the file
     sed 1d $INFILE | while IFS=, read -r EXPERIMENT_ID; do
-
-        # Get a JSESSION for authentication to XNAT
-        JSESSION=`curl -k -s -u $USERNAME:$PASSWORD ""https://central.xnat.org/REST/JSESSION""` # get a session to authenticate with
 
         # Get the subject ID from the first part of the experiment ID (OAS30001 from ID OAS30001_MR_d0129)
         SUBJECT_ID=`echo $EXPERIMENT_ID | cut -d_ -f1`
@@ -89,7 +89,7 @@ else
         # Set up the download URL and make a cURL call to download the requested scans in zip format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=zip
 
-        curl --sslv3 -k -b JSESSIONID=$JSESSION -o $DIRNAME/$EXPERIMENT_ID.zip $download_url
+        download $DIRNAME/$EXPERIMENT_ID.zip $download_url
 
         # Check the zip file to make sure we downloaded something
         # If the zip file is invalid, we didn't download a scan so there is probably no scan of that type
@@ -140,10 +140,9 @@ else
         # Remove the original zip file
         rm $DIRNAME/$EXPERIMENT_ID.zip
 
-        # Delete the JSESSION token - "log out"
-        curl -i -k -b JSESSIONID=${jsession} -X DELETE "https://central.xnat.org/data/JSESSION"
-
         echo "Done with ${EXPERIMENT_ID}."
 
     done < $INFILE
+
+    endSession
 fi
