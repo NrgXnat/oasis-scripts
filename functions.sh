@@ -8,7 +8,7 @@
 startSession() {
     # Authentication to XNAT and store cookies in cookie jar file
     local COOKIE_JAR=.cookies-$(date +%Y%M%d%s).txt
-    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://central.xnat.org/data/JSESSION"
+    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://central.xnat.org/data/JSESSION" > /dev/null
     echo ${COOKIE_JAR}
 }
 
@@ -31,7 +31,7 @@ continueDownload() {
 
 # Gets a resource from a URL.
 get() {
-    local URL=${2}
+    local URL=${1}
     curl --sslv3 -k --cookie ${COOKIE_JAR} ${URL}
 }
 
