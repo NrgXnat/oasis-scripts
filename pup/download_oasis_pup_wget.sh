@@ -40,7 +40,6 @@ if [ ${#@} == 0 ]; then
     echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"  
 else 
     source functions.sh
-    bailOnWget
 
     # Get the input arguments
     INFILE=$1
