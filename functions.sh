@@ -17,7 +17,7 @@ startSession() {
 download() {
     local OUTPUT=${1}
     local URL=${2}
-    curl --sslv3 -k --cookie ${COOKIE_JAR} -o ${OUTPUT} ${URL}
+    curl -H 'Expect:' --keepalive-time 2 -k --cookie ${COOKIE_JAR} -o ${OUTPUT} ${URL}
 }
 
 # Downloads a resource from a URL and stores the results to the specified path. The first parameter
@@ -26,13 +26,13 @@ download() {
 continueDownload() {
     local OUTPUT=${1}
     local URL=${2}
-    curl --sslv3 -k --continue - --cookie ${COOKIE_JAR} -o ${OUTPUT} ${URL}
+    curl -H 'Expect:' --keepalive-time 2 -k --continue - --cookie ${COOKIE_JAR} -o ${OUTPUT} ${URL}
 }
 
 # Gets a resource from a URL.
 get() {
     local URL=${1}
-    curl --sslv3 -k --cookie ${COOKIE_JAR} ${URL}
+    curl -H 'Expect:' --keepalive-time 2 -k --cookie ${COOKIE_JAR} ${URL}
 }
 
 # Ends the user session.
