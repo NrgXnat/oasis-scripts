@@ -1,5 +1,13 @@
 # OASIS Changelog
 
+## 4/17/2019
+
+* Uploaded missing Freesurfers for session:
+
+```
+OAS30527_Freesurfer53_d0006
+```
+
 
 ## 4/12/2019 
 
