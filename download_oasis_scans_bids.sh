@@ -269,6 +269,8 @@ else
         # Set up the download URL and make a call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
+        echo $download_url
+
         download $DIRNAME/$EXPERIMENT_ID.tar.gz $download_url
 
         # Check the tar.gz file to make sure we downloaded something
@@ -289,63 +291,16 @@ else
             download $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
 
         else
-            # retry loop
-            # first retry - use "curl --continue -" to continue a broken download
-
-            echo "Downloaded an incomplete file for ${EXPERIMENT_ID}. Retrying (${retry_count} of 5 retries)."
-
-            continueDownload $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
-
-            while ! tar tf $DIRNAME/$EXPERIMENT_ID.tar.gz &> /dev/null; do
-                
-                if [ $retry_count -lt 6 ]; then
-
-                    echo "Downloaded an incomplete file for ${EXPERIMENT_ID}. Retrying (${retry_count} of 5 retries)."
-
-                    retry_count=$retry_count+1
-
-                    continueDownload $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
-
-                else
-                    break
-                fi
-
-                if tar tf $DIRNAME/$EXPERIMENT_ID.tar.gz &> /dev/null; then
-                    break
-                fi
-
-            done
-
-            if tar tf $DIRNAME/$EXPERIMENT_ID.tar.gz &> /dev/null; then
-
-                do_unzip $SCANTYPE $EXPERIMENT_ID $DIRNAME $SUBJECT_ID
-
-                move_to_bids $DIRNAME $EXPERIMENT_ID
-
-                # Remove the empty scans folder that the files were moved from
-                rm -r $DIRNAME/$EXPERIMENT_ID
-
-                # Grab the dataset_description file and put it in the session directory
-                # Set up the URL and make a call to download the dataset_description file
-                dataset_description_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
-
-                download $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
-
-                # Change permissions on the output file
-                chmod -R u=rwX,g=rwX $DIRNAME/$subject_folder/$session_folder/dataset_description.json
-
+            if [ ! $SCANTYPE = "ALL" ]
+            then
+                echo "Could not complete the scan download. Either did not find a ${SCANTYPE} scan for ${EXPERIMENT_ID}, or the download failed."
             else
-                if [ ! $SCANTYPE = "ALL" ]
-                then
-                    echo "Could not complete the scan download. Either did not find a ${SCANTYPE} scan for ${EXPERIMENT_ID}, or the download failed."
-                else
-                    echo "Could not complete the scan download. Either could not find any scans for ${EXPERIMENT_ID}, or the download failed."
-                fi  
-            fi
+                echo "Could not complete the scan download. Either could not find any scans for ${EXPERIMENT_ID}, or the download failed."
+            fi  
         fi
 
         # Remove the original tar.gz file
-        rm $DIRNAME/$EXPERIMENT_ID.tar.gz
+        #rm $DIRNAME/$EXPERIMENT_ID.tar.gz
 
         echo "Done with ${EXPERIMENT_ID}."
         echo ""
