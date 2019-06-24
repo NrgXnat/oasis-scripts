@@ -52,11 +52,6 @@ else
         mkdir $DIRNAME
     fi
 
-    # Read in password
-    read -s -p "Enter your password for accessing OASIS data on XNAT Central:" PASSWORD
-
-    echo ""
-
     # Read the file
     sed 1d $INFILE | while IFS=, read -r PUP_ID; do
 
@@ -74,15 +69,17 @@ else
 
         echo "Checking for PUP ID ${PUP_ID} associated with ${EXPERIMENT_LABEL}."
 
+        OUTPUT_PREFIX="${DIRNAME}/${PUP_ID}"
+
         # Set up the download URL and make a wget call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${PUP_ID}/files?format=tar.gz
 
-        wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$PUP_ID.tar.gz "$download_url"
+        download ${OUTPUT_PREFIX} "$download_url"
 
         # Check the tar.gz file to make sure we downloaded something
         # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
         # If the tar.gz file is valid, untar and rearrange the files
-        if tar tf $DIRNAME/$PUP_ID.tar.gz &> /dev/null; then
+        if tar tf ${OUTPUT_PREFIX}.tar.gz &> /dev/null; then
             # We found a successfully downloaded valid tar.gz file
 
             echo "Downloaded a PUP (${PUP_ID}) from ${EXPERIMENT_LABEL}." 
@@ -90,24 +87,24 @@ else
             echo "Unzipping PUP zip and rearranging files."
 
             # Untar the downloaded file
-            tar -xzvC $DIRNAME -f $DIRNAME/$PUP_ID.tar.gz
+            tar -xzvC $DIRNAME -f ${OUTPUT_PREFIX}.tar.gz
 
             # Rearrange the files so there are fewer subfolders
             # Move the main PET folder contents up 5 levels
             # Ends up like this:
             # directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/pet_files
             # directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/etc
-            mkdir -p $DIRNAME/$PUP_ID
-            mv $DIRNAME/$PUP_ID/out/resources/DATA/files/pet_proc/* $DIRNAME/$PUP_ID
+            mkdir -p ${OUTPUT_PREFIX}
+            mv ${OUTPUT_PREFIX}/out/resources/DATA/files/pet_proc/* ${OUTPUT_PREFIX}
 
             # Change permissions on the output files
-            chmod -R u=rwX,g=rwX $DIRNAME/$PUP_ID/*
+            chmod -R u=rwX,g=rwX ${OUTPUT_PREFIX}/*
 
             # Remove the unzipped directory structure
-            rm -rf $DIRNAME/$PUP_ID/out
+            rm -rf ${OUTPUT_PREFIX}/out
 
             # Remove the Freesurfer tar.gz file that the files were moved from
-            rm -r $DIRNAME/$PUP_ID.tar.gz
+            rm -r ${OUTPUT_PREFIX}.tar.gz
         else
             echo "Could not download PUP ${PUP_ID} in ${EXPERIMENT_LABEL}."           
         fi

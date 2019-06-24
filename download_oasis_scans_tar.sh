@@ -66,11 +66,6 @@ else
         mkdir $DIRNAME
     fi
 
-    # Read in password
-    read -s -p "Enter your password for accessing OASIS data on XNAT Central:" PASSWORD
-
-    echo ""
-
     COOKIE_JAR=$(startSession)
 
     # Read the file

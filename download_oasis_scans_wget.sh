@@ -46,7 +46,7 @@ if [ ${#@} == 0 ]; then
     echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"   
     echo "<scan_type>: (Optional) scan type you would like to download (e.g. T1w). You can also enter multiple comma-separated scan types (e.g. swi,T2w). Without this argument, all scans for the given experiment_id will be downloaded. "   
 else 
-    source functions.sh
+    source functions_wget.sh
 
     # Get the input arguments
     INFILE=$1
@@ -66,11 +66,8 @@ else
         mkdir $DIRNAME
     fi
 
-    # Read in password
-    read -s -p "Enter your password for accessing OASIS data on XNAT Central:" PASSWORD
-
-    echo ""
-
+    COOKIE_JAR=$(startSession)
+    
     # Read the file
     sed 1d $INFILE | while IFS=, read -r EXPERIMENT_ID; do
 
@@ -84,15 +81,17 @@ else
             echo "Downloading all scans for ${EXPERIMENT_ID}."
         fi
 
+        OUTPUT_PREFIX="${DIRNAME}/${EXPERIMENT_ID}"
+
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
-        wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
+        download ${OUTPUT_PREFIX} "$download_url"
 
         # Check the tar.gz file to make sure we downloaded something
         # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
         # If the tar.gz file is valid, untar and rearrange the files        
-        if ! tar tf $DIRNAME/$EXPERIMENT_ID.tar.gz &> /dev/null; then
+        if ! tar tf ${OUTPUT_PREFIX}.tar.gz &> /dev/null; then
 
             if ! [ $SCANTYPE = "ALL" ]
             then
@@ -115,34 +114,37 @@ else
             echo "Decompressing scan(s) and rearranging files."
 
             # Untar the downloaded file
-            tar -xzvC $DIRNAME -f $DIRNAME/$EXPERIMENT_ID.tar.gz
+            tar -xzvC $DIRNAME -f ${OUTPUT_PREFIX}.tar.gz
 
             # Rearrange the files so there are fewer subfolders
             # Ends up like this:
             # directory_name/OAS30001_MR_d0129/anat1/file.json
             # directory_name/OAS30001_MR_d0129/anat1/file.nii.gz
-            for single_scan in $DIRNAME/$EXPERIMENT_ID/scans/*/ ; do
+            for single_scan in ${OUTPUT_PREFIX}/scans/*/ ; do
                 if [ -d ${single_scan} ]; then
                     scan_name_all=`echo $single_scan | rev | cut -d/ -f2 | rev`
                     scan_name=`echo $scan_name_all | cut -d- -f1`
 
-                    mkdir $DIRNAME/$EXPERIMENT_ID/$scan_name
-                    mv $DIRNAME/$EXPERIMENT_ID/scans/$scan_name_all/resources/*/files/* $DIRNAME/$EXPERIMENT_ID/$scan_name/.
+                    mkdir ${OUTPUT_PREFIX}/$scan_name
+                    mv ${OUTPUT_PREFIX}/scans/$scan_name_all/resources/*/files/* ${OUTPUT_PREFIX}/$scan_name/.
 
                     # Change permissions on the output files
-                    chmod -R u=rwX,g=rwX $DIRNAME/$EXPERIMENT_ID/$scan_name/*                    
+                    chmod -R u=rwX,g=rwX ${OUTPUT_PREFIX}/$scan_name/*                    
                 fi
             done
 
             # Remove the empty scans folder that the files were moved from
-            rm -rf $DIRNAME/$EXPERIMENT_ID/scans
+            rm -rf ${OUTPUT_PREFIX}/scans
 
         fi
 
         # # Remove the original tar.gz file
-        rm -f $DIRNAME/$EXPERIMENT_ID.tar.gz
+        rm -f ${OUTPUT_PREFIX}.tar.gz
 
         echo "Done with ${EXPERIMENT_ID}."
 
     done < $INFILE
+
+    endSession
+
 fi

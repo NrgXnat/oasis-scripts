@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Authenticates credentials against Central and returns the cookie jar file name. USERNAME and
-# PASSWORD must be set before calling this function.
+# Authenticates credentials against Central and returns the cookie jar file name. USERNAME must
+# be set before calling this function. The user will be prompted for the password by curl.
 #   USERNAME="foo"
-#   PASSWORD="bar"
 #   COOKIE_JAR=$(startSession)
 startSession() {
     # Authentication to XNAT and store cookies in cookie jar file
     local COOKIE_JAR=.cookies-$(date +%Y%M%d%s).txt
-    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://central.xnat.org/data/JSESSION" > /dev/null
+    curl -k -s -u ${USERNAME} --cookie-jar ${COOKIE_JAR} --output jsession.txt "https://central.xnat.org/data/JSESSION"
+    rm -f jsession.txt
     echo ${COOKIE_JAR}
 }
 
@@ -38,11 +38,7 @@ get() {
 # Ends the user session.
 endSession() {
     # Delete the JSESSION token - "log out"
-    curl -i -k --cookie ${COOKIE_JAR} -X DELETE "https://central.xnat.org/data/JSESSION"
-    rm -f ${COOKIE_JAR}
+    curl -i -k --cookie ${COOKIE_JAR} --output jsession.txt -X DELETE "https://central.xnat.org/data/JSESSION"
+    rm -f ${COOKIE_JAR} jsession.txt
 }
 
-bailOnWget() {
-    echo "There are session management issues using wget. It's probably best not to do this."
-    exit -1
-}

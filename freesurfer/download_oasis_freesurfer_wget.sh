@@ -52,11 +52,6 @@ else
         mkdir $DIRNAME
     fi
 
-    # Read in password
-    read -s -p "Enter your password for accessing OASIS data on XNAT Central:" PASSWORD
-
-    echo ""
-
     # Read the file
     sed 1d $INFILE | while IFS=, read -r FREESURFER_ID; do
 
@@ -71,15 +66,17 @@ else
 
         echo "Checking for Freesurfer ID ${FREESURFER_ID} associated with ${EXPERIMENT_LABEL}."
 
+        OUTPUT_PREFIX="${DIRNAME}/${FREESURFER_ID}"
+
         # Set up the download URL and make a wget call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
 
-        wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$FREESURFER_ID.tar.gz "$download_url"
+        download ${OUTPUT_PREFIX} "$download_url"
 
         # Check the tar.gz file to make sure we downloaded something
         # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
         # If the tar.gz file is valid, untar and rearrange the files
-        if tar tf $DIRNAME/$FREESURFER_ID.tar.gz &> /dev/null; then
+        if tar tf ${OUTPUT_PREFIX}.tar.gz &> /dev/null; then
             # We found a successfully downloaded valid tar.gz  file
 
             echo "Downloaded a Freesurfer (${FREESURFER_ID}) from ${EXPERIMENT_LABEL}." 
@@ -87,27 +84,27 @@ else
             echo "Unzipping Freesurfer and rearranging files."
 
             # Untar the downloaded file
-            tar -xzvC $DIRNAME -f $DIRNAME/$FREESURFER_ID.tar.gz
+            tar -xzvC $DIRNAME -f ${OUTPUT_PREFIX}.tar.gz
 
             # Rearrange the files so there are fewer subfolders
             # Move the main Freesurfer subfolder up 5 levels
             # Ends up like this:
             # directory_name/OAS30001_MR_d0129/freesurfer_folders
             # directory_name/OAS30001_MR_d0129/etc
-            mv $DIRNAME/$FREESURFER_ID/out/resources/DATA/files/* $DIRNAME/.
+            mv ${OUTPUT_PREFIX}/out/resources/DATA/files/* $DIRNAME/.
 
             # Change permissions on the output files
             chmod -R u=rwX,g=rwX $DIRNAME/*            
 
             # do this so we don't have to use rm -rf. 
-            rmdir $DIRNAME/$FREESURFER_ID/out/resources/DATA/files
-            rmdir $DIRNAME/$FREESURFER_ID/out/resources/DATA
-            rmdir $DIRNAME/$FREESURFER_ID/out/resources
-            rmdir $DIRNAME/$FREESURFER_ID/out
-            rmdir $DIRNAME/$FREESURFER_ID
+            rmdir ${OUTPUT_PREFIX}/out/resources/DATA/files
+            rmdir ${OUTPUT_PREFIX}/out/resources/DATA
+            rmdir ${OUTPUT_PREFIX}/out/resources
+            rmdir ${OUTPUT_PREFIX}/out
+            rmdir ${OUTPUT_PREFIX}
 
             # Remove the Freesurfer tar.gz file that the files were moved from
-            rm -r $DIRNAME/$FREESURFER_ID.tar.gz
+            rm -r ${OUTPUT_PREFIX}.tar.gz
         else
             echo "Could not get Freesurfer ${FREESURFER_ID} in ${EXPERIMENT_LABEL}."           
         fi
