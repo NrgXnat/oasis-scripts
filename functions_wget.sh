@@ -15,9 +15,9 @@ startSession() {
 # Downloads a resource from a URL and stores the results to the specified path. The first parameter
 # should be the destination path and the second parameter should be the URL.
 download() {
-    local OUTPUT_PREFIX=${1}
+    local OUTPUT=${1}
     local URL=${2}
-    wget --load-cookies ${COOKIE_JAR} --auth-no-challenge --no-check-certificate --output-document=${OUTPUT_PREFIX}.tar.gz "${URL}"
+    wget --load-cookies ${COOKIE_JAR} --auth-no-challenge --no-check-certificate --output-document=${OUTPUT} "${URL}"
 }
 
 # Ends the user session.

@@ -86,7 +86,7 @@ else
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
-        download ${OUTPUT_PREFIX} "$download_url"
+        download ${OUTPUT_PREFIX}.tar.gz "$download_url"
 
         # Check the tar.gz file to make sure we downloaded something
         # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
