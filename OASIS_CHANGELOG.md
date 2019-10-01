@@ -1,4 +1,7 @@
-# OASIS Changelog
+# OASIS Data Changelog
+
+This is a changelog to track changes to the OASIS database.
+
 
 ## 10/1/2019
 
