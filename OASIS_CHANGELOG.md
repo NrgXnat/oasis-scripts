@@ -1,5 +1,37 @@
 # OASIS Changelog
 
+## 10/1/2019
+
+* Deleted incorrect MR sessions:
+```
+OAS30552_MR_d1893 (Accession# CENTRAL_E10128)
+OAS31159_MR_d1893  (Accession# CENTRAL_E11107)
+OAS30872_MR_d1277 (Accession# CENTRAL_E10649)
+```
+
+* Deleted incorrect PUP processing:
+```
+OAS30552_PIB_PUPTIMECOURSE_d1889
+OAS31159_PIB_PUPTIMECOURSE_d1879
+```
+
+* Deleted incorrect FreeSurfer processing:
+```
+OAS30552_Freesurfer53_d1893
+OAS31159_Freesurfer53_d1893
+OAS30872_Freesurfer53_d1277
+```
+
+## 5/16/2019
+
+* Updated PET timing files for sessions:
+```
+OAS30058_AV45_d3234
+OAS30173_AV45_d3841
+OAS30262_AV45_d0839
+```
+
+
 ## 4/17/2019
 
 * Uploaded missing Freesurfers for session:
