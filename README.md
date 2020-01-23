@@ -10,7 +10,9 @@
   * [download_pup/download_oasis_pup.sh](#download_pupdownload_oasis_pupsh)
 - [Matching Up Session Data by Days From Entry](#matching-up-session-data-by-days-from-entry)
   * [session_matchup/oasis_data_matchup.R](#session_matchupoasis_data_matchupr)
-- [Detailed instructions on how to run this script](#detailed-instructions-on-how-to-run-this-script)
+- [Detailed instructions on how to run these scripts](#detailed-instructions-on-how-to-run-these-scripts)
+  * [Downloading](#downloading)
+  * [Matching Up](#matching-up)
   * [List of available scan type names](#list-of-available-scan-type-names)
 - [Creating a CSV file for use with these scripts](#creating-a-csv-file-for-use-with-these-scripts)
     + [Note on Unix file formatting](#note-on-unix-file-formatting)
@@ -191,7 +193,9 @@ Move the resulting csv file(s) into the same folder as the script.
 
 5. Go into your command line. On Windows you can use a terminal system like [MobaXTerm](https://mobaxterm.mobatek.net/). If you're using a Mac you can use Terminal. Make sure you are **not** running the script while logged in as the root user. Change directories to the folder your scripts and empty folder are in using the `cd` command.
 
-6. If you are **downloading**, run the download_oasis_scans script using the following command:
+## Downloading
+
+If you are **downloading**, run the download_oasis_scans script using the following command:
 
 ```
 ./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
@@ -209,6 +213,8 @@ Where `<input_file.csv>` is the name of the file containing the list of OASIS ex
 ```
 
 The files for the scans from each experiment ID in your list should begin downloading.
+
+## Matching Up
 
 If you are running the **matchup script**, run the oasis_data_matchup.R script using the following command:
 
