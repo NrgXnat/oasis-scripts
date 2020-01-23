@@ -2,15 +2,16 @@
 
 - [OASIS3 Scripts Overview](#oasis3-scripts-overview)
 - [Downloading MR and PET Scan files](#downloading-mr-and-pet-scan-files)
-  * [download_scans/download_oasis_scans.sh](#download-scans-download-oasis-scanssh)
-    + [Detailed instructions on how to run this script](#detailed-instructions-on-how-to-run-this-script)
-    + [List of available scan type names](#list-of-available-scan-type-names)
+  * [download_scans/download_oasis_scans.sh](#download_scans__download_oasis_scanssh)
+  * [download_scans/download_oasis_scans_bids.sh](#download_scans__download_oasis_scans_bidssh)
 - [Downloading Freesurfer files](#downloading-freesurfer-files)
-  * [download_freesurfer/download_oasis_freesurfer.sh](#download-freesurfer-download-oasis-freesurfersh)
+  * [download_freesurfer/download_oasis_freesurfer.sh](#download_freesurfer__download_oasis_freesurfersh)
 - [Downloading PET Unified Pipeline (PUP) files](#downloading-pet-unified-pipeline--pup--files)
-  * [download_pup/download_oasis_pup.sh](#download-pup-download-oasis-pupsh)
+  * [download_pup/download_oasis_pup.sh](#download_pup__download_oasis_pupsh)
 - [Matching Up Session Data by Days From Entry](#matching-up-session-data-by-days-from-entry)
-  * [session_matchup/oasis_data_matchup.R](#session-matchup-oasis-data-matchupr)
+  * [session_matchup/oasis_data_matchup.R](#session_matchup__oasis_data_matchupr)
+- [Detailed instructions on how to run this script](#detailed-instructions-on-how-to-run-this-script)
+  * [List of available scan type names](#list-of-available-scan-type-names)
 - [Creating a CSV file for use with these scripts](#creating-a-csv-file-for-use-with-these-scripts)
     + [Note on Unix file formatting](#note-on-unix-file-formatting)
       - [Using Microsoft Notepad](#using-microsoft-notepad)
@@ -25,7 +26,7 @@ This repository contains scripts that can be used to download files from the OAS
 
 # Downloading MR and PET Scan files
 
-## download_oasis_scans.sh 
+## download_scans/download_oasis_scans.sh 
 
 This script downloads scans of a specified type and organizes the files. 
 
@@ -59,7 +60,7 @@ directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 
 # Downloading MR and PET Scan files in BIDS format
 
-## download_oasis_scans_bids.sh 
+## download_scans/download_oasis_scans_bids.sh 
 
 This script downloads scans from OASIS and organizes the files into Brain Imaging Data Structure (BIDS) format (See the [BIDS website](https://bids.neuroimaging.io/) and the [BIDS file specification](https://bids.neuroimaging.io/bids_spec.pdf) for more details on the BIDS format). 
 
@@ -80,7 +81,7 @@ See [Detailed instructions on how to run these scripts]() for more details on ho
 
 # Downloading Freesurfer files
 
-## freesurfer/download_oasis_freesurfer.sh 
+## download_freesurfer/download_oasis_freesurfer.sh 
 
 The scripts contained in the `freesurfer` folder can be used to download Freesurfer data and organize the files.
 
@@ -107,7 +108,7 @@ This script organizes the files into folders such that the directory `directory 
 
 # Downloading PET Unified Pipeline (PUP) files
 
-## pup/download_oasis_pup.sh 
+## download_pup/download_oasis_pup.sh 
 
 The scripts contained in the `pup` folder can be used to download PUP data and organize the files.
 
@@ -133,7 +134,7 @@ This script organizes the files into folders such that the directory `directory_
 
 # Matching Up Session Data by Days From Entry
 
-## oasis_data_matchup.R 
+## session_matchup/oasis_data_matchup.R 
 
 This script takes in two OASIS-3 .csv formatted spreadsheets and matches up the sessions based on your requested days from entry distance requirements. This script requires R at least version 3.3.0 and the R data.table library minimum version 1.12.8. (See the [R data.table website](https://rdatatable.gitlab.io/data.table/) for more details on the data.table package). 
 
