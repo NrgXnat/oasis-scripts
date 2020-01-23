@@ -226,7 +226,7 @@ Rscript oasis_data_matchup.R oasis_mr_sessions.csv oasis_adrc_clinical_data.csv 
 
 ```
 
-The output file you specify should contain your matched data.
+After running the matchup script, the output file you specify should then contain your matched data.
 
 
 ## List of available scan type names
