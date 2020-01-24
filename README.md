@@ -12,8 +12,8 @@
   * [session_matchup/oasis_data_matchup.R](#session_matchupoasis_data_matchupr)
 - [Detailed instructions on how to run these scripts](#detailed-instructions-on-how-to-run-these-scripts)
   * [Downloading](#downloading)
+  * [List of available scan type names for downloading](#list-of-available-scan-type-names-for-downloading)
   * [Matching Up](#matching-up)
-  * [List of available scan type names](#list-of-available-scan-type-names)
 - [Creating a CSV file for use with these scripts](#creating-a-csv-file-for-use-with-these-scripts)
     + [Note on Unix file formatting](#note-on-unix-file-formatting)
       - [Using Microsoft Notepad](#using-microsoft-notepad)
@@ -138,7 +138,7 @@ This script organizes the files into folders such that the directory `directory_
 
 ## session_matchup/oasis_data_matchup.R 
 
-This script takes in two OASIS-3 .csv formatted spreadsheets and matches up the sessions based on your requested days from entry distance requirements. This script requires R at least version 3.3.0 and the R data.table library minimum version 1.12.8. (See the [R data.table website](https://rdatatable.gitlab.io/data.table/) for more details on the data.table package). 
+This script takes in two OASIS-3 .csv formatted spreadsheets and matches up the sessions based on your requested days from entry distance requirements. This script requires R at least version 3.3.0 and the R data.table library minimum version 1.12.8. See the [R-project website](https://www.r-project.org/) for more details on the R language and visit the [R data.table library website](https://rdatatable.gitlab.io/data.table/) for more details on the data.table library. 
 
 OASIS-3 data has been anonymized and dates have been eliminated from the data set. OASIS-3 instead uses "days from entry" to note when scan sessions and questionnaire sessions happen relative to each other. The "days from entry" variable is seen in OASIS-3 IDs for MR sessions, PET sessions, Freesurfer assessors, PUP assessors, and questionnaire sessions (such as ADRC Clinical Data entries or UDS form entries). At the end of each ID is a string `d0000` where 0000 is the days since the subject's entry date into the study. A days from entry value of 0 means that this is the subject's first visit.
 
@@ -146,7 +146,7 @@ Scan sessions and questionnaire sessions do not always happen at the same visit.
 
 A script has been created to help match up the data values. It takes as required input two CSV files of data that you must download from OASIS-3. For more information on that, see the "[Creating a CSV file](#creating-a-csv-file-for-use-with-these-scripts)" section of this README. 
 
-When you set up your CSV files, the first two columns must contain specific IDs and be in a specific order. The first column in each spreadsheet MUST be the OASIS ID that contains a days-from-entry value at the end of it (e.g. `OAS30001_MR_d0000` in the MR session spreadsheet, and `OAS30003_ClinicalData_d0123`, etc.). The second column MUST be the OASIS subject ID (e.g. `OAS30001` in the MR session spreadsheet, and `OAS30003` in the ADRC Clinical Data entry spreadsheet). You can select these columns using the Edit Columns feature of an XNAT search. For more details on searching and editing displayed columns, see [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html). 
+When you set up your CSV files, the first two columns must contain specific IDs and be in a specific order. The first column in each spreadsheet MUST be the OASIS ID that contains a days-from-entry value at the end of it (e.g. `OAS30001_MR_d0000` in the MR session spreadsheet, and `OAS30003_ClinicalData_d0123`, etc.). The second column MUST be the OASIS subject ID (e.g. `OAS30001` in the MR session spreadsheet, and `OAS30003` in the ADRC Clinical Data entry spreadsheet). You can select these columns using the Edit Columns feature of an XNAT search. For more details on searching, modifying which columns are displayed, and downloading spreadsheets, see the [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html) page of the XNAT wiki. 
 
 You must also determine which order you want to match in. In the script, each entry in "list1" will receive one matched entry from "list2" if a "list2" entry meets your days from entry distance criteria. 
 
@@ -214,6 +214,13 @@ Where `<input_file.csv>` is the name of the file containing the list of OASIS ex
 
 The files for the scans from each experiment ID in your list should begin downloading.
 
+
+## List of available scan type names for downloading
+
+When downloading, if you are entering `scan_type` into your script, use any of the following names: `angio`, `asl`, `bold`, `dwi`, `fieldmap`, `FLAIR`, `GRE`, `minIP`, `swi`, `T1w`, `T2star`, `T2w`
+For more information on these scan types, see the [OASIS Imaging Data Dictionary](https://www.oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v1.5.pdf). 
+
+
 ## Matching Up
 
 If you are running the **matchup script**, run the oasis_data_matchup.R script using the following command:
@@ -225,21 +232,17 @@ Rscript oasis_data_matchup.R <list1.csv> <list2.csv> <num_days_before> <num_days
 Where `<list1.csv>` is the name of your first list file, `<list2.csv>` is the name of your second list file, `<num_days_before>` is your maximum allowable number of days before to consider an entry valid, `<num_days_after>` is your maximum allowable number of days after to consider an entry valid, and `<output_file.csv>` is a name of an output file (any file name you wish to save your resulting merged file as). A couple of example commands are below:
 
 ```
-# Get a ADRC Clinical Data entry for every MR session entry. Get the closest ADRC Clinical Data entry as long as the ADRC Clinical Data entry is within 1 year of the MR Session entry, either before or after.
+# Get a ADRC Clinical Data entry for every MR session entry. Get the closest ADRC Clinical Data 
+# entry as long as the ADRC Clinical Data entry is within 1 year of the MR Session entry, either before or after.
 Rscript oasis_data_matchup.R oasis_mr_sessions.csv oasis_adrc_clinical_data.csv 365 365 oasis_mr_sessions_and_adrc_clinical_data_matched_1year.csv
 
-# Get a ADRC Clinical Data entry for every MR session entry. Get the closest ADRC Clinical Data entry as long as the ADRC Clinical Data entry is within 1 year BEFORE the MR Session entry only.
+# Get a ADRC Clinical Data entry for every MR session entry. Get the closest ADRC Clinical Data
+# entry as long as the ADRC Clinical Data entry is within 1 year BEFORE the MR Session entry only.
 Rscript oasis_data_matchup.R oasis_mr_sessions.csv oasis_adrc_clinical_data.csv 365 0 oasis_mr_sessions_and_adrc_clinical_data_matched_1year_before.csv
 
 ```
 
 After running the matchup script, the output file you specify should then contain your matched data.
-
-
-## List of available scan type names
-
-When downloading, if you are entering `scan_type` into your script, use any of the following names: `angio`, `asl`, `bold`, `dwi`, `fieldmap`, `FLAIR`, `GRE`, `minIP`, `swi`, `T1w`, `T2star`, `T2w`
-For more information on these scan types, see the [OASIS Imaging Data Dictionary](https://www.oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v1.5.pdf). 
 
 
 # Creating a CSV file for use with these scripts
