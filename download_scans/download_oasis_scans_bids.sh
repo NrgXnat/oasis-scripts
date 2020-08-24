@@ -31,7 +31,7 @@
 # directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
 # etc.
 #
-# Last Updated: 10/3/2018
+# Last Updated: 8/21/2020
 # Author: Sarah Keefe
 #
 #
@@ -82,6 +82,9 @@ function move_to_bids () {
             # sub-OAS30001_ses-d0757_minIP.json
             SCAN_FILENAME=`echo $SCAN_FILE_PATH | rev | cut -d/ -f1`
             SCAN_FILENAME=`echo $SCAN_FILENAME | rev`
+
+            echo "scan filename is: ${SCAN_FILENAME}"
+            echo "scan type is: ${SCAN_TYPE}"
 
             # sub-OAS30001
             scan_subject_sub=`echo $SCAN_FILENAME | cut -d_ -f1`
@@ -157,6 +160,18 @@ function move_to_bids () {
                 new_path=$new_basepath/$dest_fieldmap
                 mkdir -p $new_path
                 mv $SCAN_FILE_PATH $new_path/.
+
+                # Fix for https://github.com/NrgXnat/oasis-scripts/issues/11 part 2
+                # Replace "_echo" in dataset_description with BIDS-compliant "acq-echo"
+                if [[ "${SCAN_FILENAME}" == "${scan_subject_sub}_${scan_session_ses}_echo"* ]]
+                then
+                    echo "Updating echo fieldmap file name for BIDS compliance."
+                    UPDATED_SCAN_FILENAME=`echo ${SCAN_FILENAME} | sed 's/echo/acq-echo/g'`
+                    UPDATED_SCAN_FILENAME=`echo ${UPDATED_SCAN_FILENAME} | sed 's/echo-/echo/g'`
+                    echo "Updated scan filename is ${UPDATED_SCAN_FILENAME}"
+                    mv $new_path/${SCAN_FILENAME} $new_path/${UPDATED_SCAN_FILENAME}
+                fi
+
             elif [ $SCAN_TYPE = "dti" ]
             then                        
                 new_path=$new_basepath/$dest_dti
@@ -289,6 +304,10 @@ else
             # Set up the URL and make a call to download the dataset_description file
             dataset_description_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
             download $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
+
+            # Fix for https://github.com/NrgXnat/oasis-scripts/issues/11 part 1
+            # Replace "BidsVersion" in dataset_description with BIDS-compliant "BIDSVersion"
+            sed -i 's/BidsVersion/BIDSVersion/g' $DIRNAME/$subject_folder/$session_folder/dataset_description.json
 
         else
             if [ ! $SCANTYPE = "ALL" ]
