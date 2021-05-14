@@ -3,11 +3,9 @@
 # oasis_data_matchup.py
 #================================================================
 #
-# Usage: python oasis_data_matchup.py --adrc <adrc.csv> --sessions <sessions.csv> --output_name <output_filename.csv>
+# Usage: python oasis_data_matchup.py --list1 <list1.csv> --list2 <list2.csv> --output_name <output_filename.csv>
 #                                     --lower_bound <num_days_before> --upper_bound <num_days_after> 
 # 
-#
-# Requires the data.tables library.
 #
 # This script will select the closest element in list2 for each element in list1, based on the OASIS days from entry. 
 # For example, if list1 contains OASIS MR sessions, and list2 contains OASIS ADRC Clinical Data entries, it will 
@@ -49,10 +47,10 @@
 # <output_filename.csv> - A filename to use for the output spreadsheet file.
 #
 #
-# Last Updated: 29/08/2020
-# Author: Christopher Fleetwood
+# Last Updated: 12/05/2021
+# Author: Khaled Elmalawany
+# Adapted from: Christopher Fleetwood
 #
-
 
 
 import argparse
@@ -60,24 +58,29 @@ import pandas as pd
 import numpy as np
 import os
 
-def main(adrc, sessions, output_name, lower_bound, upper_bound):
-    adrc = pd.read_csv(adrc)
-    sessions = pd.read_csv(sessions)
-    adrc['Day'] = adrc['ADRC_ADRCCLINICALDATA ID'].apply(lambda x: int(x.split('_')[2][1:]))
-
-    sessions['Day'] = sessions['MR ID'].apply(lambda x: int(x.split('_')[2][1:]))
-
-    adrc =adrc.loc[adrc['Subject'].isin(sessions['Subject'])]
-
-    out_df = pd.DataFrame()
-    for index, row in sessions.iterrows():
-        mask = (adrc['Subject'] == row['Subject']) & ((adrc['Day'] < row['Day'] + upper_bound) & (adrc['Day'] > row['Day'] - lower_bound))   
-        for name in row.index:
-            adrc.loc[mask, name +'_MR'] = row[name]
+def main(list1, list2, output_name, lower_bound, upper_bound):
+    # Create dataframes with provided CSV files
+    list1 = pd.read_csv(list1)
+    list2 = pd.read_csv(list2)
     
-    adrc.dropna(subset=['MR ID_MR'], inplace=True)
+    # Create a Day column from ID
+    list1['Day'] = list1.iloc[:, 0].apply(lambda x: int(x.split('_')[2][1:]))
+    list2['Day'] = list2.iloc[:,0].apply(lambda x: int(x.split('_')[2][1:]))
+    
+    # Update list1 to only consider subjects that are in both lists
+    list1 =list1.loc[list1['Subject'].isin(list2['Subject'])]
+    
+    # Create and populate the dataframe
+    out_df = pd.DataFrame()
+    for index, row in list2.iterrows():
+        mask = (list1['Subject'] == row['Subject']) & ((list1['Day'] < row['Day'] + upper_bound) & (list1['Day'] > row['Day'] - lower_bound))   
+        for name in row.index:
+            list1.loc[mask, name +'_MR'] = row[name]
+    
+    # Drop rows of which a match was not found
+    list1.dropna(inplace=True)
 
-    adrc.to_csv(output_name)
+    list1.to_csv(output_name, index=False)
 
 
 def is_valid_file(parser, arg):
@@ -87,14 +90,14 @@ def is_valid_file(parser, arg):
         return open(arg, 'r')  # return an open file handle
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Python version of ADRC Clinical Data matching to OASIS MR Sessions')
+    parser = argparse.ArgumentParser(description='Python version of list1 matching to list2 of the OASIS database')
 
-    parser.add_argument('--adrc', required=True, type=lambda x: is_valid_file(parser, x), help="File containing ADRC clinical data. Must feature column ADRC_ADRCCLINICALDATA ID and a Subject column. <adrc.csv>")
-    parser.add_argument('--sessions', required=True, type=lambda x: is_valid_file(parser, x), help="File containing OASIS MR Sessions. Must feature column MR ID and a Subject column. <sessions.csv>")
+    parser.add_argument('--list1', required=True, type=lambda x: is_valid_file(parser, x), help="File containing OASIS list 1 clinical data. Must feature column of respective ID as the first column and a Subject column. <list1.csv>")
+    parser.add_argument('--list2', required=True, type=lambda x: is_valid_file(parser, x), help="File containing OASIS list2 clinical data. Must feature column of respective ID as the first column and a Subject column. <list2.csv>")
     parser.add_argument('--output_name', required=True, type=str, help="File name of the output CSV <output.csv>")
     parser.add_argument('--lower_bound', type=int, default=180,  help="Number of days prior MR session that Clinical Data is included.")
     parser.add_argument('--upper_bound', type=int, default=180,  help="Number of days post MR session that Clinical Data is included.")
 
     args = parser.parse_args()
 
-    main(args.adrc, args.sessions, args.output_name, args.lower_bound, args.upper_bound)
+    main(args.list1, args.list2, args.output_name, args.lower_bound, args.upper_bound)
