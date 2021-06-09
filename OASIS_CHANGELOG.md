@@ -7,6 +7,7 @@ This is a changelog to track changes to the OASIS database.
 * Added missing files for FreeSurfer processing:
 ```
 OAS30764_Freesurfer53_d0055
+OAS30336_Freesurfer53_d0244
 ```
 
 ## 10/1/2019
