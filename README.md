@@ -79,7 +79,7 @@ directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.json
 directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
 ```
 
-See [Detailed instructions on how to run these scripts]() for more details on how to run the script.
+See [Detailed instructions on how to run these scripts](https://github.com/NrgXnat/oasis-scripts#detailed-instructions-on-how-to-run-these-scripts) for more details on how to run the script.
 
 # Downloading Freesurfer files
 
