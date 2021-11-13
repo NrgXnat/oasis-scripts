@@ -20,7 +20,7 @@
 # directory_name/OAS30001_MR_d0129/$FREESURFER_FOLDERS
 #
 #
-# Last Updated: 9/6/2018
+# Last Updated: 11/13/2021
 # Author: Sarah Keefe
 #
 #
@@ -39,8 +39,6 @@ if [ ${#@} == 0 ]; then
     echo "<directory_name>: Directory path to save Freesurfer files to"  
     echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"  
 else 
-    source functions.sh
-
     # Get the input arguments
     INFILE=$1
     DIRNAME=$2

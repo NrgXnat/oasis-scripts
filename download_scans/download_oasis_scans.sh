@@ -26,11 +26,53 @@
 # directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 #
 #
-# Last Updated: 4/12/2018
+# Last Updated: 11/13/2021
 # Author: Sarah Keefe
 #
 #
 unset module
+
+# Authenticates credentials against Central and returns the cookie jar file name. USERNAME and
+# PASSWORD must be set before calling this function.
+#   USERNAME="foo"
+#   PASSWORD="bar"
+#   COOKIE_JAR=$(startSession)
+startSession() {
+    # Authentication to XNAT and store cookies in cookie jar file
+    local COOKIE_JAR=.cookies-$(date +%Y%M%d%s).txt
+    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://central.xnat.org/data/JSESSION" > /dev/null
+    echo ${COOKIE_JAR}
+}
+
+# Downloads a resource from a URL and stores the results to the specified path. The first parameter
+# should be the destination path and the second parameter should be the URL.
+download() {
+    local OUTPUT=${1}
+    local URL=${2}
+    curl -H 'Expect:' --keepalive-time 2 -k --cookie ${COOKIE_JAR} -o ${OUTPUT} ${URL}
+}
+
+# Downloads a resource from a URL and stores the results to the specified path. The first parameter
+# should be the destination path and the second parameter should be the URL. This function tries to
+# resume a previously started but interrupted download.
+continueDownload() {
+    local OUTPUT=${1}
+    local URL=${2}
+    curl -H 'Expect:' --keepalive-time 2 -k --continue - --cookie ${COOKIE_JAR} -o ${OUTPUT} ${URL}
+}
+
+# Gets a resource from a URL.
+get() {
+    local URL=${1}
+    curl -H 'Expect:' --keepalive-time 2 -k --cookie ${COOKIE_JAR} ${URL}
+}
+
+# Ends the user session.
+endSession() {
+    # Delete the JSESSION token - "log out"
+    curl -i -k --cookie ${COOKIE_JAR} -X DELETE "https://central.xnat.org/data/JSESSION"
+    rm -f ${COOKIE_JAR}
+}
 
 # usage instructions
 if [ ${#@} == 0 ]; then
@@ -46,7 +88,6 @@ if [ ${#@} == 0 ]; then
     echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"   
     echo "<scan_type>: (Optional) scan type you would like to download (e.g. T1w). You can also enter multiple comma-separated scan types (e.g. swi,T2w). Without this argument, all scans for the given experiment_id will be downloaded. "   
 else 
-    source functions.sh
 
     # Get the input arguments
     INFILE=$1
