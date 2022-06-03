@@ -2,6 +2,19 @@
 
 This is a changelog to track changes to the OASIS database.
 
+## 6/3/2022
+
+* Remove incorrect extra files and add corrected scan files in scans fmap1 and fmap2 for the following session:
+```
+OAS31030_MR_d0031
+```
+
+* Remove incorrect extra files from dwi1 scan for the following session:
+```
+OAS30253_MR_d3948
+```
+
+
 ## 6/7/2021
 
 * Added missing files for FreeSurfer processing:
