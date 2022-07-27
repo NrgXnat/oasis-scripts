@@ -2,6 +2,18 @@
 
 This is a changelog to track changes to the OASIS database.
 
+## 7/25/2022
+
+The 2022 update to OASIS3 has officially been released. The updated [OASIS Data Dictionary v2.0](https://www.oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v2.0.pdf) contains details on the data added as part of this release.
+
+
+## 7/15/2022
+
+Removed extraneous incorrect scan files from scan func1 in OAS31006_MR_d0120.
+Removed extraneous incorrect scan files from scans anat1, anat2, and func1 in OAS30008_MR_d1313.
+Removed extraneous incorrect scan files from scans anat1, anat2, anat3, anat4, anat5, and func1 in OAS30253_MR_d3948.
+
+
 ## 6/3/2022
 
 * Remove incorrect extra files and add corrected scan files in scans fmap1 and fmap2 for the following session:
