@@ -23,7 +23,7 @@
 
 # OASIS3 Scripts Overview
 
-This repository contains scripts that can be used to download files from the OASIS3 project on XNAT Central. In order to access the OASIS data you must have signed the [OASIS Data Use Agreement](https://www.oasis-brains.org) and have access to the OASIS3 project on XNAT Central at [central.xnat.org](https://www.central.xnat.org). 
+This repository contains scripts that can be used to download files from the OASIS3 project on XNAT Central. In order to access the OASIS data you must have signed the [OASIS Data Use Agreement](https://www.oasis-brains.org) and have access to the OASIS3 project on XNAT Central at [central.xnat.org](https://central.xnat.org). 
 
 
 # Downloading MR and PET Scan files
