@@ -2,6 +2,20 @@
 
 This is a changelog to track changes to the OASIS database.
 
+## 9/13/2022
+
+Deleted duplicate PET sessions:
+```
+OAS30970_AV45_d0237
+OAS30422_AV45_d0099
+```
+
+Deleted associated PUP:
+```
+OAS30422_AV45_PUPTIMECOURSE_d0099
+```
+
+
 ## 7/25/2022
 
 The 2022 update to OASIS3 has officially been released. The updated [OASIS Data Dictionary v2.0](https://www.oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v2.0.pdf) contains details on the data added as part of this release.
