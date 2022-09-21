@@ -2,6 +2,18 @@
 
 This is a changelog to track changes to the OASIS database.
 
+## 9/21/2022
+
+Deleted incorrect CT session:
+```
+OAS30417_CT_d2279
+```
+
+Deleted incorrect PET session:
+```
+OAS30417_PIB_d2279
+```
+
 ## 9/13/2022
 
 Deleted duplicate PET sessions:
