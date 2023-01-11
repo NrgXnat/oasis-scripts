@@ -47,9 +47,10 @@
 # <output_filename.csv> - A filename to use for the output spreadsheet file.
 #
 #
-# Last Updated: 12/05/2021
+# Last Updated: 1/11/2023
 # Author: Khaled Elmalawany
 # Adapted from: Christopher Fleetwood
+# Last Updated By: Sarah Keefe
 #
 
 
@@ -64,8 +65,10 @@ def main(list1, list2, output_name, lower_bound, upper_bound):
     list2 = pd.read_csv(list2)
     
     # Create a Day column from ID
-    list1['Day'] = list1.iloc[:, 0].apply(lambda x: int(x.split('_')[2][1:]))
-    list2['Day'] = list2.iloc[:,0].apply(lambda x: int(x.split('_')[2][1:]))
+    # Use the "dXXXX" value from the ID/label in the first column
+    # pandas extract will pull that based on a regular expression no matter where it is.
+    list1['Day'] = list1.iloc[:, 0].str.extract(r'(d\d{4})', expand=False).str.strip().apply(lambda x: int(x.split('d')[1]))
+    list2['Day'] = list2.iloc[:,0].str.extract(r'(d\d{4})', expand=False).str.strip().apply(lambda x: int(x.split('d')[1]))
     
     # Update list1 to only consider subjects that are in both lists
     list1 =list1.loc[list1['Subject'].isin(list2['Subject'])]
@@ -75,10 +78,13 @@ def main(list1, list2, output_name, lower_bound, upper_bound):
     for index, row in list2.iterrows():
         mask = (list1['Subject'] == row['Subject']) & ((list1['Day'] < row['Day'] + upper_bound) & (list1['Day'] > row['Day'] - lower_bound))   
         for name in row.index:
-            list1.loc[mask, name +'_MR'] = row[name]
+            list1.loc[mask, name +'_list2'] = row[name]
     
     # Drop rows of which a match was not found
-    list1.dropna(inplace=True)
+    #list1.dropna(inplace=True)
+    list2_firstcolumnname=list2.columns.values[0] + "_list2"
+    list1.dropna(subset=[list2_firstcolumnname])
+    #list2.dropna(subset=[list2_firstcolumnname])
 
     list1.to_csv(output_name, index=False)
 
@@ -92,11 +98,11 @@ def is_valid_file(parser, arg):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Python version of list1 matching to list2 of the OASIS database')
 
-    parser.add_argument('--list1', required=True, type=lambda x: is_valid_file(parser, x), help="File containing OASIS list 1 clinical data. Must feature column of respective ID as the first column and a Subject column. <list1.csv>")
-    parser.add_argument('--list2', required=True, type=lambda x: is_valid_file(parser, x), help="File containing OASIS list2 clinical data. Must feature column of respective ID as the first column and a Subject column. <list2.csv>")
+    parser.add_argument('--list1', required=True, type=lambda x: is_valid_file(parser, x), help="File containing OASIS list 1 data. Must feature column of respective ID as the first column and a Subject column. <list1.csv>")
+    parser.add_argument('--list2', required=True, type=lambda x: is_valid_file(parser, x), help="File containing OASIS list2 data. Must feature column of respective ID as the first column and a Subject column. <list2.csv>")
     parser.add_argument('--output_name', required=True, type=str, help="File name of the output CSV <output.csv>")
-    parser.add_argument('--lower_bound', type=int, default=180,  help="Number of days prior MR session that Clinical Data is included.")
-    parser.add_argument('--upper_bound', type=int, default=180,  help="Number of days post MR session that Clinical Data is included.")
+    parser.add_argument('--lower_bound', type=int, default=180,  help="Number of days prior to list1 session that list2 session is included.")
+    parser.add_argument('--upper_bound', type=int, default=180,  help="Number of days post list1 session that list2 session is included.")
 
     args = parser.parse_args()
 
