@@ -6,7 +6,7 @@
 #
 # Usage: ./download_oasis_scans_bids.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
 # 
-# Download scans of a specified type from OASIS3 on XNAT Central and organize the files into BIDS format
+# Download scans of a specified type from OASIS3 or OASIS4 on XNAT Central and organize the files into BIDS format
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for experiment_id 
@@ -31,7 +31,7 @@
 # directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
 # etc.
 #
-# Last Updated: 11/13/2021
+# Last Updated: 1/26/2023
 # Author: Sarah Keefe
 #
 #
@@ -322,8 +322,16 @@ else
             echo "Downloading all scans for ${EXPERIMENT_ID}."
         fi
 
+        # Set project in URL based on experiment ID
+        # default to OASIS3
+        PROJECT_ID=OASIS3
+        # If the experiment ID provided starts with OASIS4 then use project=OASIS4 in the URL
+        if [[ "${EXPERIMENT_ID}" == "OAS4"* ]]; then
+            PROJECT_ID=OASIS4
+        fi
+
         # Set up the download URL and make a call to download the requested scans in tar.gz format
-        download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
+        download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
         echo $download_url
 
@@ -343,7 +351,7 @@ else
 
             # Grab the dataset_description file and put it in the session directory
             # Set up the URL and make a call to download the dataset_description file
-            dataset_description_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
+            dataset_description_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
             download $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
 
             # Fix for https://github.com/NrgXnat/oasis-scripts/issues/11 part 1

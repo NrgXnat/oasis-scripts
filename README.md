@@ -1,6 +1,6 @@
 # Table of Contents
 
-- [OASIS3 Scripts Overview](#oasis3-scripts-overview)
+- [OASIS3 and OASIS4 Scripts Overview](#oasis3-and-oasis4-scripts-overview)
 - [Downloading MR and PET Scan files](#downloading-mr-and-pet-scan-files)
   * [download_scans/download_oasis_scans.sh](#download_scansdownload_oasis_scanssh)
   * [download_scans/download_oasis_scans_bids.sh](#download_scansdownload_oasis_scans_bidssh)
@@ -21,9 +21,9 @@
       - [Using `dos2unix`](#using--dos2unix-)
 
 
-# OASIS3 Scripts Overview
+# OASIS3 and OASIS4 Scripts Overview
 
-This repository contains scripts that can be used to download files from the OASIS3 project on XNAT Central. In order to access the OASIS data you must have signed the [OASIS Data Use Agreement](https://www.oasis-brains.org) and have access to the OASIS3 project on XNAT Central at [central.xnat.org](https://central.xnat.org). 
+This repository contains scripts that can be used to download files from the OASIS3 or OASIS4 projects on XNAT Central. In order to access the OASIS data you must have signed the [OASIS Data Use Agreement](https://www.oasis-brains.org) and have access to the OASIS3 or OASIS4 project on XNAT Central at [central.xnat.org](https://central.xnat.org). 
 
 
 # Downloading MR and PET Scan files
@@ -138,13 +138,13 @@ This script organizes the files into folders such that the directory `directory_
 
 ## session_matchup/oasis_data_matchup.R 
 
-This script takes in two OASIS-3 .csv formatted spreadsheets and matches up the sessions based on your requested days from entry distance requirements. This script requires R at least version 3.3.0 and the R data.table library minimum version 1.12.8. See the [R-project website](https://www.r-project.org/) for more details on the R language and visit the [R data.table library website](https://rdatatable.gitlab.io/data.table/) for more details on the data.table library. 
+This script takes in two OASIS3 or OASIS4 .csv formatted spreadsheets and matches up the sessions based on your requested days from entry distance requirements. This script requires R at least version 3.3.0 and the R data.table library minimum version 1.12.8. See the [R-project website](https://www.r-project.org/) for more details on the R language and visit the [R data.table library website](https://rdatatable.gitlab.io/data.table/) for more details on the data.table library. 
 
-OASIS-3 data has been anonymized and dates have been eliminated from the data set. OASIS-3 instead uses "days from entry" to note when scan sessions and questionnaire sessions happen relative to each other. The "days from entry" variable is seen in OASIS-3 IDs for MR sessions, PET sessions, Freesurfer assessors, PUP assessors, and questionnaire sessions (such as ADRC Clinical Data entries or UDS form entries). At the end of each ID is a string `d0000` where 0000 is the days since the subject's entry date into the study. A days from entry value of 0 means that this is the subject's first visit.
+OASIS3 or OASIS4 data has been anonymized and dates have been eliminated from the data sets. OASIS3 and OASIS4 instead use "days from entry" to note when scan sessions and questionnaire sessions happen relative to each other. The "days from entry" variable is seen in OASIS3 or OASIS4 IDs for MR sessions, PET sessions, Freesurfer assessors, PUP assessors, and questionnaire sessions (such as ADRC Clinical Data entries or UDS form entries). At the end of each ID is a string `d0000` where 0000 is the days since the subject's entry date into the study. A days from entry value of 0 means that this is the subject's first visit.
 
 Scan sessions and questionnaire sessions do not always happen at the same visit. If for example you are trying to find a corresponding ADRC Clinical Data entry for a given MR session, you must first choose a criteria for how long from a particular MR session you will consider a corresponding ADRC Clinical Data entry to be "valid". A common criteria is to consider all ADRC Clinical Data entries within 1 year before or after the MR session date to be valid. In this case you would consider the closest ADRC Clinical Data entry to the MR session to be a "match" as long as its days from entry value is within 365 days before or within 365 days after the MR session's days from entry value. 
 
-A script has been created to help match up the data values. It takes as required input two CSV files of data that you must download from OASIS-3. For more information on that, see the "[Creating a CSV file](#creating-a-csv-file-for-use-with-these-scripts)" section of this README. 
+A script has been created to help match up the data values. It takes as required input two CSV files of data that you must download from OASIS3 or OASIS4. For more information on that, see the "[Creating a CSV file](#creating-a-csv-file-for-use-with-these-scripts)" section of this README. 
 
 When you set up your CSV files, the first two columns must contain specific IDs and be in a specific order. The first column in each spreadsheet MUST be the OASIS ID that contains a days-from-entry value at the end of it (e.g. `OAS30001_MR_d0000` in the MR session spreadsheet, and `OAS30003_ClinicalData_d0123`, etc.). The second column MUST be the OASIS subject ID (e.g. `OAS30001` in the MR session spreadsheet, and `OAS30003` in the ADRC Clinical Data entry spreadsheet). You can select these columns using the Edit Columns feature of an XNAT search. For more details on searching, modifying which columns are displayed, and downloading spreadsheets, see the [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html) page of the XNAT wiki. 
 
@@ -157,9 +157,9 @@ Rscript oasis_data_matchup.R <list1.csv> <list2.csv> <num_days_before> <num_days
 
 Required inputs:
 
-`<list1.csv>` - A Unix formatted, comma-separated file containing your "list 1" entry data. This can also include other columns of data, but the first column MUST be the OASIS-3 type ID that contains the "days from entry" at the end as described above. The second column MUST be the subject ID as described above.
+`<list1.csv>` - A Unix formatted, comma-separated file containing your "list 1" entry data. This can also include other columns of data, but the first column MUST be the OASIS3 or OASIS4 type ID that contains the "days from entry" at the end as described above. The second column MUST be the subject ID as described above.
 
-`<list2.csv>` - A Unix formatted, comma-separated file containing your "list 2" entry data. This can also include other columns of data, but the first column MUST be the OASIS-3 type ID that contains the "days from entry" at the end as described above. The second column MUST be the subject ID as described above.
+`<list2.csv>` - A Unix formatted, comma-separated file containing your "list 2" entry data. This can also include other columns of data, but the first column MUST be the OASIS3 or OASIS4 type ID that contains the "days from entry" at the end as described above. The second column MUST be the subject ID as described above.
 
 `<num_days_before>` - A positive integer value. This should be the maximum number of days before a list1 element that a "matched" list2 element should occur.
 
@@ -249,7 +249,7 @@ After running the matchup script, the output file you specify should then contai
 
 When you run any of the scripts, you will need to download or create a CSV of OASIS experiment IDs or Freesurfer IDs to use as an input to the script. This can be created from a search result table on XNAT Central, described on the XNAT Wiki on the [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html) page. 
 
-- From an MR Session search, use **Options** then **Edit Columns** to include the "MR ID" column in your column view. If you are doing a PET Session search, include the "PET ID" column. If you are downloading Freesurfer files, use the Freesurfer tab from the OASIS project page, or do an Advanced Search for Freesurfers and specify the OASIS3 project. Then include the "Freesurfer ID" column in your column view.
+- From an MR Session search, use **Options** then **Edit Columns** to include the "MR ID" column in your column view. If you are doing a PET Session search, include the "PET ID" column. If you are downloading Freesurfer files, use the Freesurfer tab from the OASIS project page, or do an Advanced Search for Freesurfers and specify the OASIS3 or OASIS4 project. Then include the "Freesurfer ID" column in your column view.
 - Download the resulting table by selecting **Options** then **Spreadsheet**. 
 - Once you download a spreadsheet, remove all columns from it except for the "MR ID" column and save it as a .csv file. This can be done In Microsoft Excel by selecting Save As and choosing "CSV (Comma delimited) \*.csv" as the file type. 
 - If you save a file using Microsoft Excel, you must convert it to Unix format before using it as input to a script. If the file is incorrectly formatted, you may experience errors or download failures when you run the script. Instructions for doing this conversion are below.

@@ -6,7 +6,7 @@
 #
 # Usage: ./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
 # 
-# Download scans of a specified type from OASIS3 on XNAT Central and organize the files - uses "tar" instead of "zip"
+# Download scans of a specified type from OASIS3 or OASIS4 on XNAT Central and organize the files - uses "tar" instead of "zip"
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for experiment_id 
@@ -26,7 +26,7 @@
 # directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 #
 #
-# Last Updated: 11/13/2021
+# Last Updated: 1/26/2023
 # Author: Sarah Keefe
 #
 #
@@ -127,8 +127,16 @@ else
             echo "Downloading all scans for ${EXPERIMENT_ID}."
         fi
 
+        # Set project in URL based on experiment ID
+        # default to OASIS3
+        PROJECT_ID=OASIS3
+        # If the experiment ID provided starts with OASIS4 then use project=OASIS4 in the URL
+        if [[ "${EXPERIMENT_ID}" == "OAS4"* ]]; then
+            PROJECT_ID=OASIS4
+        fi
+
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
-        download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
+        download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
         download $DIRNAME/$EXPERIMENT_ID.tar.gz $download_url
 

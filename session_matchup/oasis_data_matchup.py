@@ -28,13 +28,13 @@
 #       the same day.
 #
 # Required inputs:
-# <list1.csv> - A comma-separated spreadsheet file such as one downloaded from OASIS3 on central.xnat.org. 
+# <list1.csv> - A comma-separated spreadsheet file such as one downloaded from OASIS3 or OASIS4 on central.xnat.org. 
 #       The first column should be the ID that ends in the number of days from entry, "d0000" (e.g. OAS30001_MR_d0129)
 #       First column header MUST be 'ADRC_ADRCCLINICALDATA ID'
 #       The second column should contain the subject ID, e.g. OAS30001.
 #       Second column header MUST be 'Subject'
 #        
-# <list2.csv> - A comma-separated spreadsheet file such as one downloaded from OASIS3 on central.xnat.org. 
+# <list2.csv> - A comma-separated spreadsheet file such as one downloaded from OASIS3 or OASIS4 on central.xnat.org. 
 #       The first column should be the ID that ends in the number of days from entry, "d0000" (e.g. OAS30001_MR_d0129)
 #       The first column header MUST be 'MR ID'
 #       The second column should contain the subject ID, e.g. OAS30001.

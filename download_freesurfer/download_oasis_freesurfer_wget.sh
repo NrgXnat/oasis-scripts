@@ -6,7 +6,7 @@
 #
 # Usage: ./download_oasis_freesurfer_tar.sh <input_file.csv> <directory_name> <xnat_central_username>
 # 
-# Download Freesurfer files from OASIS3 on XNAT Central and organize the files - uses "wget" instead of "curl"
+# Download Freesurfer files from OASIS3 or OASIS4 on XNAT Central and organize the files - uses "wget" instead of "curl"
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for freesurfer_id 
@@ -20,7 +20,7 @@
 # directory_name/OAS30001_MR_d0129/$FREESURFER_FOLDERS
 #
 #
-# Last Updated: 11/13/2021
+# Last Updated: 1/26/2023
 # Author: Sarah Keefe
 #
 #
@@ -67,10 +67,18 @@ else
         # combine to form the experiment label (OAS30001_MR_d0129)
         EXPERIMENT_LABEL=${SUBJECT_ID}_MR_${DAYS_FROM_ENTRY}
 
+        # Set project in URL based on experiment ID
+        # default to OASIS3
+        PROJECT_ID=OASIS3
+        # If the experiment ID provided starts with OASIS4 then use project=OASIS4 in the URL
+        if [[ "${EXPERIMENT_ID}" == "OAS4"* ]]; then
+            PROJECT_ID=OASIS4
+        fi
+
         echo "Checking for Freesurfer ID ${FREESURFER_ID} associated with ${EXPERIMENT_LABEL}."
 
         # Set up the download URL and make a wget call to download the requested scans in tar.gz format
-        download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
+        download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
 
         wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$FREESURFER_ID.tar.gz "$download_url"
 

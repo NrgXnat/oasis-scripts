@@ -30,10 +30,10 @@
 #       the same day.
 #
 # Required inputs:
-# <list1.csv> - A comma-separated spreadsheet file such as one downloaded from OASIS3 on central.xnat.org. 
+# <list1.csv> - A comma-separated spreadsheet file such as one downloaded from OASIS3 or OASIS 4on central.xnat.org. 
 #       The first column should be the ID that ends in the number of days from entry, "d0000" (e.g. OAS30001_MR_d0129)
 #       The second column should contain the subject ID, e.g. OAS30001.
-# <list2.csv> - A comma-separated spreadsheet file such as one downloaded from OASIS3 on central.xnat.org. 
+# <list2.csv> - A comma-separated spreadsheet file such as one downloaded from OASIS3 or OASIS4 on central.xnat.org. 
 #       The first column should be the ID that ends in the number of days from entry, "d0000" (e.g. OAS30001_MR_d0129)
 #       The second column should contain the subject ID, e.g. OAS30001.
 #       *** Each element from list1 will be linked with a corresponding element in list2. ***

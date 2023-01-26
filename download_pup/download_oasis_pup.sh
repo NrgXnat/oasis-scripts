@@ -6,7 +6,7 @@
 #
 # Usage: ./download_oasis_pup.sh <input_file.csv> <directory_name> <xnat_central_username>
 # 
-# Download PET Unified Pipeline (PUP) files from OASIS3 on XNAT Central and organize the files
+# Download PET Unified Pipeline (PUP) files from OASIS3 or OASIS4 on XNAT Central and organize the files
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for pup_id 
@@ -20,7 +20,7 @@
 # directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/$PUP_FOLDERS
 #
 #
-# Last Updated: 11/13/2021
+# Last Updated: 1/26/2023
 # Author: Sarah Keefe
 #
 #
@@ -114,10 +114,18 @@ else
         # combine to form the PET experiment label (OAS30001_AV45_d2430)
         EXPERIMENT_LABEL=${SUBJECT_ID}_${TRACER}_${DAYS_FROM_ENTRY}
 
+        # Set project in URL based on experiment ID
+        # default to OASIS3
+        PROJECT_ID=OASIS3
+        # If the experiment ID provided starts with OASIS4 then use project=OASIS4 in the URL
+        if [[ "${EXPERIMENT_ID}" == "OAS4"* ]]; then
+            PROJECT_ID=OASIS4
+        fi
+
         echo "Checking for PUP ID ${PUP_ID} associated with ${EXPERIMENT_LABEL}."
 
         # Set up the download URL and make a cURL call to download the requested scans in zip format
-        download_url=https://central.xnat.org/data/archive/projects/OASIS3/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${PUP_ID}/files?format=zip
+        download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${PUP_ID}/files?format=zip
 
         download $DIRNAME/$PUP_ID.zip $download_url
 
