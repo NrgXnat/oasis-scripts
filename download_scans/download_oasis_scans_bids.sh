@@ -4,7 +4,7 @@
 # download_oasis_scans_bids.sh
 #================================================================
 #
-# Usage: ./download_oasis_scans_bids.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type> -b
+# Usage: ./download_oasis_scans_bids.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
 # 
 # Download scans of a specified type from OASIS3 on XNAT Central and organize the files into BIDS format
 #
