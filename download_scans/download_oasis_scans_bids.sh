@@ -31,7 +31,7 @@
 # directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
 # etc.
 #
-# Last Updated: 1/26/2023
+# Last Updated: 2/22/2023
 # Author: Sarah Keefe
 #
 #
@@ -368,7 +368,7 @@ else
         fi
 
         # Remove the original tar.gz file
-        #rm $DIRNAME/$EXPERIMENT_ID.tar.gz
+        rm $DIRNAME/$EXPERIMENT_ID.tar.gz
 
         echo "Done with ${EXPERIMENT_ID}."
         echo ""
