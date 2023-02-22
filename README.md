@@ -3,10 +3,12 @@
 - [OASIS3 and OASIS4 Scripts Overview](#oasis3-and-oasis4-scripts-overview)
 - [Downloading MR and PET Scan files](#downloading-mr-and-pet-scan-files)
   * [download_scans/download_oasis_scans.sh](#download_scansdownload_oasis_scanssh)
+- [Downloading MR and PET Scan files in BIDS format](#downloading-mr-and-pet-scan-files-in-bids-format)
   * [download_scans/download_oasis_scans_bids.sh](#download_scansdownload_oasis_scans_bidssh)
+  * [Notes on OASIS3 and OASIS4 BIDS formatting](#notes-on-oasis3-and-oasis4-bids-formatting)
 - [Downloading Freesurfer files](#downloading-freesurfer-files)
   * [download_freesurfer/download_oasis_freesurfer.sh](#download_freesurferdownload_oasis_freesurfersh)
-- [Downloading PET Unified Pipeline (PUP) files](#downloading-pet-unified-pipeline--pup--files)
+- [Downloading PET Unified Pipeline (PUP) files](#downloading-pet-unified-pipeline-pup-files)
   * [download_pup/download_oasis_pup.sh](#download_pupdownload_oasis_pupsh)
 - [Matching Up Session Data by Days From Entry](#matching-up-session-data-by-days-from-entry)
   * [session_matchup/oasis_data_matchup.R](#session_matchupoasis_data_matchupr)
@@ -17,8 +19,8 @@
 - [Creating a CSV file for use with these scripts](#creating-a-csv-file-for-use-with-these-scripts)
     + [Note on Unix file formatting](#note-on-unix-file-formatting)
       - [Using Microsoft Notepad](#using-microsoft-notepad)
-      - [Using `tr`](#using--tr-)
-      - [Using `dos2unix`](#using--dos2unix-)
+      - [Using `tr`](#using-tr-)
+      - [Using `dos2unix`](#using-dos2unix-)
 
 
 # OASIS3 and OASIS4 Scripts Overview
@@ -272,12 +274,12 @@ The comma-separated file you send to the script must be Unix-formatted - the fil
 
 When saving a comma-separated file in Microsoft Excel, select "Save As" and choose "CSV (Comma Delimited) (\*.csv)". Then open the file using Microsoft Notepad, and in Notepad select "Save As", and under "Encoding" choose "UTF-8".
 
-#### Using `tr`
+#### Using tr
 ```
 tr -d '\r' < myfile.csv > myfile_unix.csv
 ```
 
-#### Using `dos2unix`
+#### Using dos2unix
 
 Install `dos2unix` as follows:
 
