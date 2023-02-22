@@ -1,6 +1,7 @@
 # Table of Contents
 
 - [OASIS3 and OASIS4 Scripts Overview](#oasis3-and-oasis4-scripts-overview)
+  * [Brief description of scan and participant data](#brief-description-of-scan-and-participant-data)
 - [Downloading MR and PET Scan files](#downloading-mr-and-pet-scan-files)
   * [download_scans/download_oasis_scans.sh](#download_scansdownload_oasis_scanssh)
 - [Downloading MR and PET Scan files in BIDS format](#downloading-mr-and-pet-scan-files-in-bids-format)
@@ -26,6 +27,16 @@
 # OASIS3 and OASIS4 Scripts Overview
 
 This repository contains scripts that can be used to download files from the OASIS3 or OASIS4 projects on XNAT Central. In order to access the OASIS data you must have signed the [OASIS Data Use Agreement](https://www.oasis-brains.org) and have access to the OASIS3 or OASIS4 project on XNAT Central at [central.xnat.org](https://central.xnat.org). 
+
+## Brief description of scan and participant data
+
+The OASIS3 and OASIS4 projects contain data organized by participant into an XNAT "subject" page. Many data types are available that encompass each type of assessment each participant received. More details on the assessment types available in the OASIS3 and OASIS4 data can be found in the (OASIS3 data dictionary)[https://oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v2.0.pdf] at (oasis-brains.org)[https://www.oasis-brains.org].
+
+Each project also contain an extra subject labeled "0AS_data_files" or "0AS4_data_files" respectively, which should appear as the first entry in the subject list when sorted alphabetically. These subject pages are not associated with individual study participants but are instead used to store data spreadsheets for the entire dataset that can be downloaded by OASIS users. Each of these "subject" pages has one or more experiment entries attached that appear as "MR sessions" but actually contain "cohort files" or "data files" depending on the session label. The "scans" in the list for these sessions contain spreadsheets that can be downloaded for ease of use in your projects by checking the boxes of the list entries you want to download and clicking the "Download" button that appears. 
+
+If you use any of the download scripts in this repository to obtain OASIS3 and OASIS4 data, be aware of whether you are including data from the subjects "0AS_data_files" or "0AS4_data_files" in a list with standard OASIS participant data. If you plan to run any scan data processing scripts on your downloaded data, the files in those folders will not be able to be processed automatically since they are not actual participant data. You may want to keep those subject folders separate when organizing your downloaded data.
+
+More details on navigating and viewing the OASIS3 and OASIS4 data on XNAT Central can be found at the [OASIS on XNAT Central overview page](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html). 
 
 
 # Downloading MR and PET Scan files
@@ -264,6 +275,7 @@ When you run any of the scripts, you will need to download or create a CSV of OA
 - From an MR Session search, use **Options** then **Edit Columns** to include the "MR ID" column in your column view. If you are doing a PET Session search, include the "PET ID" column. If you are downloading Freesurfer files, use the Freesurfer tab from the OASIS project page, or do an Advanced Search for Freesurfers and specify the OASIS3 or OASIS4 project. Then include the "Freesurfer ID" column in your column view.
 - Download the resulting table by selecting **Options** then **Spreadsheet**. 
 - Once you download a spreadsheet, remove all columns from it except for the "MR ID" column and save it as a .csv file. This can be done In Microsoft Excel by selecting Save As and choosing "CSV (Comma delimited) \*.csv" as the file type. 
+- If you plan to run your data through a script, you may want to remove any entries for the "0AS_data_files" or "0AS4_data_files" subjects described earlier and download those separately into another folder. Those subject entries and session pages do not contain actual participant data but instead contain general .csv data files with details on the entire dataset.
 - If you save a file using Microsoft Excel, you must convert it to Unix format before using it as input to a script. If the file is incorrectly formatted, you may experience errors or download failures when you run the script. Instructions for doing this conversion are below.
 
 
