@@ -66,7 +66,7 @@ directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 
 This script downloads scans from OASIS and organizes the files into Brain Imaging Data Structure (BIDS) format (See the [BIDS website](https://bids.neuroimaging.io/) and the [BIDS file specification](https://bids.neuroimaging.io/bids_spec.pdf) for more details on the BIDS format). 
 
-The `download_oasis_scans_bids.sh` will work if you are able to use `wget` and `tar`.
+The `download_oasis_scans_bids.sh` will work as-is if you are able to use `wget` and `tar`.
 
 This script organizes the files into folders like this:
 
@@ -80,6 +80,14 @@ directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
 ```
 
 See [Detailed instructions on how to run these scripts](https://github.com/NrgXnat/oasis-scripts#detailed-instructions-on-how-to-run-these-scripts) for more details on how to run the script.
+
+### Notes on OASIS3 and OASIS4 BIDS formatting
+
+The OASIS3 and OASIS4 BIDS files use version 1.0.1 of the BIDS specification, so if you plan to use a BIDS validator on downloaded OASIS data, make sure your validator software can validate to that version. This is an older version of the BIDS specification and there may be formatting that does not match current specifications or fields that were not incorporated into the BIDS specification until later in its development. _The OASIS3 and OASIS4 BIDS files will not be updated to newer BIDS specifications._ One specific issue that has been found is the labeling of the OASIS functional scans - for the OASIS3 and OASIS4 data the task name should be "rest". If you require OASIS JSON files to match a newer BIDS specification, you can modify downloaded functional scan JSON files to meet the specification version you require.
+
+Details on the BIDS specification number and citation details for the OASIS datasets can be found in the dataset description files which are located at the MR and PET session level, under "Manage Files", in the "resources" folder (first folder in the Manage Files list), "BIDS" subfolder, in the `dataset_description.json` file for each session. 
+
+Our original scan DICOM files were converted to BIDS format using [dcm2niix](https://github.com/rordenlab/dcm2niix) version 17-October-2017, which is also listed in each individual scan BIDS JSON file.
 
 # Downloading Freesurfer files
 
