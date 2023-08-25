@@ -137,7 +137,7 @@ else
 
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
-
+        echo ${download_url}
         download $DIRNAME/$EXPERIMENT_ID.tar.gz $download_url
 
         # Check the tar.gz file to make sure we downloaded something
@@ -151,6 +151,12 @@ else
             else
                 echo "Could not download all scans for ${EXPERIMENT_ID}."
             fi  
+            echo
+            echo
+            echo "If there is an error message, it is:"
+            cat $DIRNAME/$EXPERIMENT_ID.tar.gz
+            echo
+            echo
 
         else
 
