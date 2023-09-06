@@ -71,7 +71,7 @@ else
         # default to OASIS3
         PROJECT_ID=OASIS3
         # If the experiment ID provided starts with OASIS4 then use project=OASIS4 in the URL
-        if [[ "${EXPERIMENT_ID}" == "OAS4"* ]]; then
+        if [[ "${EXPERIMENT_LABEL}" == "OAS4"* ]]; then
             PROJECT_ID=OASIS4
         fi
 

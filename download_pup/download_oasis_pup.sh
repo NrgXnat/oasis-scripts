@@ -20,7 +20,7 @@
 # directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/$PUP_FOLDERS
 #
 #
-# Last Updated: 1/26/2023
+# Last Updated: 9/6/2023
 # Author: Sarah Keefe
 #
 #
@@ -118,8 +118,15 @@ else
         # default to OASIS3
         PROJECT_ID=OASIS3
         # If the experiment ID provided starts with OASIS4 then use project=OASIS4 in the URL
-        if [[ "${EXPERIMENT_ID}" == "OAS4"* ]]; then
+        if [[ "${EXPERIMENT_LABEL}" == "OAS4"* ]]; then
             PROJECT_ID=OASIS4
+        fi
+
+        # If the experiment ID provided starts with OAS3XXXXX_AV1451 then use project=OASIS3_AV1451 in the URL
+        if [[ "${EXPERIMENT_LABEL}" == "OAS3"*"_AV1451"* ]]; then
+            PROJECT_ID=OASIS3_AV1451
+            # Use the line below if you are downloading longitudinal AV1451 data from the OASIS3_AV1451L project
+            #PROJECT_ID=OASIS3_AV1451L
         fi
 
         echo "Checking for PUP ID ${PUP_ID} associated with ${EXPERIMENT_LABEL}."

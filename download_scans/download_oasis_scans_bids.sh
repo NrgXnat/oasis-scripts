@@ -31,7 +31,7 @@
 # directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
 # etc.
 #
-# Last Updated: 2/22/2023
+# Last Updated: 9/6/2023
 # Author: Sarah Keefe
 #
 #
@@ -329,6 +329,13 @@ else
         if [[ "${EXPERIMENT_ID}" == "OAS4"* ]]; then
             PROJECT_ID=OASIS4
         fi
+
+        # If the experiment ID provided starts with OAS3XXXXX_AV1451 then use project=OASIS3_AV1451 in the URL
+        if [[ "${EXPERIMENT_ID}" == "OAS3"*"_AV1451"* ]]; then
+            PROJECT_ID=OASIS3_AV1451
+            # Use the line below instead if you are downloading longitudinal AV1451 data from the OASIS3_AV1451L project
+            #PROJECT_ID=OASIS3_AV1451L
+        fi        
 
         # Set up the download URL and make a call to download the requested scans in tar.gz format
         download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
