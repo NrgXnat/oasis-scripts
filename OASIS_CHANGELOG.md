@@ -2,6 +2,13 @@
 
 This is a changelog to track changes to the OASIS database.
 
+## 4/14/2024
+
+Corrected scan files for PET session:
+```
+OAS31294_AV1451_d0103
+```
+
 ## 9/21/2022
 
 Deleted incorrect CT session:
