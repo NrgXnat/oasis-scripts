@@ -4,15 +4,15 @@
 # download_oasis_freesurfer_wget.sh
 #================================================================
 #
-# Usage: ./download_oasis_freesurfer_tar.sh <input_file.csv> <directory_name> <xnat_central_username>
+# Usage: ./download_oasis_freesurfer_tar.sh <input_file.csv> <directory_name> <nitrc_ir_username>
 # 
-# Download Freesurfer files from OASIS3 or OASIS4 on XNAT Central and organize the files - uses "wget" instead of "curl"
+# Download Freesurfer files from OASIS3 or OASIS4 on NITRC IR and organize the files - uses "wget" instead of "curl"
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for freesurfer_id 
 #       (e.g. OAS30001_Freesurfer53_d0129)
 # <directory_name> - A directory path (relative or absolute) to save the Freesurfer files to
-# <xnat_central_username> - Your XNAT Central username used for accessing OASIS data on central.xnat.org
+# <nitrc_ir_username> - Your NITRC IR username used for accessing OASIS data on nitrc.org/ir
 #       (you will be prompted for your password before downloading)
 #
 # This script organizes the files into folders like this:
@@ -20,7 +20,7 @@
 # directory_name/OAS30001_MR_d0129/$FREESURFER_FOLDERS
 #
 #
-# Last Updated: 1/26/2023
+# Last Updated: 5/13/2024
 # Author: Sarah Keefe
 #
 #
@@ -33,11 +33,11 @@ if [ ${#@} == 0 ]; then
     echo ""
     echo "This script downloads Freesurfer files based on a list of session ids in a csv file. "
     echo ""   
-    echo "Usage: $0 input_file.csv directory_name central_username scan_type"
+    echo "Usage: $0 input_file.csv directory_name nitrc_username scan_type"
     echo "<input_file>: A Unix formatted, comma separated file containing the following columns:"
     echo "    freesurfer_id (e.g. OAS30001_Freesurfer53_d0129)"
     echo "<directory_name>: Directory path to save Freesurfer files to"  
-    echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"  
+    echo "<nitrc_ir_username>: Your NITRC IR username used for accessing OASIS data (you will be prompted for your password)"  
 else 
     # Get the input arguments
     INFILE=$1
@@ -51,7 +51,7 @@ else
     fi
 
     # Read in password
-    read -s -p "Enter your password for accessing OASIS data on XNAT Central:" PASSWORD
+    read -s -p "Enter your password for accessing OASIS data on NITRC IR:" PASSWORD
 
     echo ""
 
@@ -78,7 +78,7 @@ else
         echo "Checking for Freesurfer ID ${FREESURFER_ID} associated with ${EXPERIMENT_LABEL}."
 
         # Set up the download URL and make a wget call to download the requested scans in tar.gz format
-        download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
+        download_url=https://nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
 
         wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$FREESURFER_ID.tar.gz "$download_url"
 

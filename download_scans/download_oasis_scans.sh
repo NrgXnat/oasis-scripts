@@ -4,19 +4,22 @@
 # download_oasis_scans.sh
 #================================================================
 #
-# Usage: ./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
+# Usage: ./download_oasis_scans.sh <input_file.csv> <directory_name> <nitrc_ir_username> <scan_type>
 # 
-# Download scans of a specified type from OASIS3 or OASIS4 on XNAT Central and organize the files
+# Download scans of a specified type from OASIS3 or OASIS4 on NITRC IR and organize the files
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for experiment_id 
 #       (e.g. OAS30001_MR_d0129)
 # <directory_name> - A directory path (relative or absolute) to save the scan files to
-# <xnat_central_username> - Your XNAT Central username used for accessing OASIS data on central.xnat.org
+# <nitrc_ir_username> - Your NITRC IR username used for accessing OASIS data on nitrc.org/ir
 #       (you will be prompted for your password before downloading)
 # <scan_type> - (Optional) The scan type of the scan you want to download. (e.g. T1w, angio, bold, fieldmap, FLAIR)
 #       You can also enter multiple scan types separated by a comma with no whitespace (e.g. T2w,swi,bold)
 #       Without this argument, all scans for the given experiment_id will be downloaded.
+# <tau_project_id> - (optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, 
+#       specify which project to download from. Other OASIS projects will be chosen automatically based on session label.
+#       If you want to use this option but not specify a particular <scan_type> option, you must specify scan_type as "ALL".
 #
 # This script organizes the files into folders like this:
 #
@@ -26,13 +29,13 @@
 # directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 #
 #
-# Last Updated: 9/6/2023
+# Last Updated: 5/13/2024
 # Author: Sarah Keefe
 #
 #
 unset module
 
-# Authenticates credentials against Central and returns the cookie jar file name. USERNAME and
+# Authenticates credentials against NITRC and returns the cookie jar file name. USERNAME and
 # PASSWORD must be set before calling this function.
 #   USERNAME="foo"
 #   PASSWORD="bar"
@@ -40,7 +43,7 @@ unset module
 startSession() {
     # Authentication to XNAT and store cookies in cookie jar file
     local COOKIE_JAR=.cookies-$(date +%Y%M%d%s).txt
-    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://central.xnat.org/data/JSESSION" > /dev/null
+    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://nitrc.org/ir/data/JSESSION" > /dev/null
     echo ${COOKIE_JAR}
 }
 
@@ -70,7 +73,7 @@ get() {
 # Ends the user session.
 endSession() {
     # Delete the JSESSION token - "log out"
-    curl -i -k --cookie ${COOKIE_JAR} -X DELETE "https://central.xnat.org/data/JSESSION"
+    curl -i -k --cookie ${COOKIE_JAR} -X DELETE "https://nitrc.org/ir/data/JSESSION"
     rm -f ${COOKIE_JAR}
 }
 
@@ -81,12 +84,13 @@ if [ ${#@} == 0 ]; then
     echo ""
     echo "This script downloads scans of the specified scan type based on a list of session ids in a csv file. "
     echo ""   
-    echo "Usage: $0 input_file.csv directory_name central_username scan_type"
+    echo "Usage: $0 input_file.csv directory_name nitrc_username scan_type"
     echo "<input_file>: A Unix formatted, comma separated file containing the following columns:"
     echo "    experiment_id (e.g. OAS30001_MR_d0129)"
     echo "<directory_name>: Directory path to save scan files to"  
-    echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"   
-    echo "<scan_type>: (Optional) scan type you would like to download (e.g. T1w). You can also enter multiple comma-separated scan types (e.g. swi,T2w). Without this argument, all scans for the given experiment_id will be downloaded. "   
+    echo "<nitrc_ir_username>: Your NITRC IR username used for accessing OASIS data (you will be prompted for your password)"   
+    echo "<scan_type>: (Optional) scan type you would like to download (e.g. T1w). You can also enter multiple comma-separated scan types (e.g. swi,T2w). Without this argument, all scans for the given experiment_id will be downloaded. "
+    echo "<tau_project_id>: (optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, specify which project to download from. Other OASIS projects will be chosen automatically based on session label. If you want to use this option but not specify a particular <scan_type> option, you must specify the <scan_type> input as \"ALL\"."      
 else 
 
     # Get the input arguments
@@ -97,7 +101,12 @@ else
     if [ $# -ge 4 ]
     then
         SCANTYPE=$4
+        AV1451_PROJ_ID=$5
     else
+        SCANTYPE=ALL
+    fi
+
+    if [[ ${SCANTYPE} == "" ]]; then
         SCANTYPE=ALL
     fi
 
@@ -108,7 +117,7 @@ else
     fi
 
     # Read in password
-    read -s -p "Enter your password for accessing OASIS data on XNAT Central:" PASSWORD
+    read -s -p "Enter your password for accessing OASIS data on NITRC IR:" PASSWORD
 
     echo ""
 
@@ -135,15 +144,22 @@ else
             PROJECT_ID=OASIS4
         fi
 
-        # If the experiment ID provided starts with OAS3XXXXX_AV1451 then use project=OASIS3_AV1451 in the URL
-        if [[ "${EXPERIMENT_ID}" == "OAS3"*"_AV1451"* ]]; then
-            PROJECT_ID=OASIS3_AV1451
-            # Use the line below instead if you are downloading longitudinal AV1451 data from the OASIS3_AV1451L project
-            #PROJECT_ID=OASIS3_AV1451L
+        # If the experiment ID provided starts with OAS3XXXXX_AV1451 then check if "AV1451_PROJ_ID" is set
+        # If so, use that as the project ID. Otherwise use project=OASIS3_AV1451 in the URL
+        if [[ "${EXPERIMENT_LABEL}" == "OAS3"*"_AV1451"* ]]; then
+            if [[ "${AV1451_PROJ_ID}" == "OASIS3_AV1451" ]] || [[ "${AV1451_PROJ_ID}" == "OASIS3_AV1451L" ]]; then
+                echo "Tau project ID ${AV1451_PROJ_ID} was specified. Downloading from ${AV1451_PROJ_ID}."
+                PROJECT_ID=${AV1451_PROJ_ID}
+            else
+                PROJECT_ID=OASIS3_AV1451
+                # You can also uncomment the line below if you are downloading longitudinal AV1451 data
+                # and don't want to send AV1451_PROJ_ID as an input to this script.
+                #PROJECT_ID=OASIS3_AV1451L
+            fi
         fi
 
         # Set up the download URL and make a cURL call to download the requested scans in zip format
-        download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=zip
+        download_url=https://nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=zip
         echo $download_url
         download $DIRNAME/$EXPERIMENT_ID.zip $download_url
 

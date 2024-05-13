@@ -1,6 +1,6 @@
 # Table of Contents
 
-- [OASIS3 and OASIS4 Scripts Overview](#oasis3-and-oasis4-scripts-overview)
+- [OASIS Scripts Overview](#oasis3-and-oasis4-scripts-overview)
   * [Brief description of scan and participant data](#brief-description-of-scan-and-participant-data)
 - [Downloading MR and PET Scan files](#downloading-mr-and-pet-scan-files)
   * [download_scans/download_oasis_scans.sh](#download_scansdownload_oasis_scanssh)
@@ -24,19 +24,21 @@
       - [Using `dos2unix`](#using-dos2unix)
 
 
-# OASIS3 and OASIS4 Scripts Overview
+# OASIS Scripts Overview
 
-This repository contains scripts that can be used to download files from the OASIS3 or OASIS4 projects on XNAT Central. In order to access the OASIS data you must have signed the [OASIS Data Use Agreement](https://www.oasis-brains.org) and have access to the OASIS3 or OASIS4 project on XNAT Central at [central.xnat.org](https://central.xnat.org). 
+This repository contains scripts that can be used to download files from the OASIS projects on the NITRC Image Repository. In order to access the OASIS data you must have signed the [OASIS Data Use Agreement](https://www.oasis-brains.org) and have access to the OASIS project you require data from (OASIS3, OASIS4, OASIS3_AV1451, or OASIS3_AV1451L) on the NITRC Image Repository (NITRC-IR) at [nitrc.org/ir](https://nitrc.org/ir). 
+
+These scripts are not needed for OASIS1 and OASIS2 data access. That data can be downloaded directly as zip files from the [OASIS website](https://www.oasis-brains.org)
+
+For reference, the OASIS data dictionary can be found [here](https://sites.wustl.edu/oasisbrains/files/2024/04/OASIS-3_Imaging_Data_Dictionary_v2.3-a93c947a586e7367.pdf) and on [oasis-brains.org](https://www.oasis-brains.org).
 
 ## Brief description of scan and participant data
 
-The OASIS3 and OASIS4 projects contain data organized by participant into an XNAT "subject" page. Many data types are available that encompass each type of assessment each participant received. More details on the assessment types available in the OASIS3 and OASIS4 data can be found in the [OASIS3 data dictionary](https://oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v2.0.pdf) at [oasis-brains.org](https://www.oasis-brains.org).
+The OASIS3, OASIS4, OASIS3_AV1451, or OASIS3_AV1451L projects contain data organized by participant into an XNAT "subject" page. Many data types are available that encompass each type of assessment each participant received. More details on the assessment types available in the OASIS data can be found in the [OASIS3 data dictionary](https://sites.wustl.edu/oasisbrains/files/2024/04/OASIS-3_Imaging_Data_Dictionary_v2.3-a93c947a586e7367.pdf) at [oasis-brains.org](https://www.oasis-brains.org).
 
 Each project also contain an extra subject labeled "0AS_data_files" or "0AS4_data_files" respectively, which should appear as the first entry in the subject list when sorted alphabetically. These subject pages are not associated with individual study participants but are instead used to store data spreadsheets for the entire dataset that can be downloaded by OASIS users. Each of these "subject" pages has one or more experiment entries attached that appear as "MR sessions" but actually contain "cohort files" or "data files" depending on the session label. The "scans" in the list for these sessions contain spreadsheets that can be downloaded for ease of use in your projects by checking the boxes of the list entries you want to download and clicking the "Download" button that appears. 
 
-If you use any of the download scripts in this repository to obtain OASIS3 and OASIS4 data, be aware of whether you are including data from the subjects "0AS_data_files" or "0AS4_data_files" in a list with standard OASIS participant data. If you plan to run any scan data processing scripts on your downloaded data, the files in those folders will not be able to be processed automatically since they are not actual participant data. You may want to keep those subject folders separate when organizing your downloaded data.
-
-More details on navigating and viewing the OASIS3 and OASIS4 data on XNAT Central can be found at the [OASIS on XNAT Central overview page](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html). 
+If you use any of the download scripts in this repository to obtain OASIS data, be aware of whether you are including data from the subjects "0AS_data_files" or "0AS4_data_files" in a list with standard OASIS participant data. If you plan to run any scan data processing scripts on your downloaded data, the files in those folders will not be able to be processed automatically since they are not actual participant data. You may want to keep those subject folders separate when organizing your downloaded data.
 
 
 # Downloading MR and PET Scan files
@@ -50,7 +52,7 @@ Use `download_oasis_scans.sh` if you are on Linux or Mac and have the `zip` prog
 
 Usage: 
 ```
-./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
+./download_oasis_scans.sh <input_file.csv> <directory_name> <nitrc_ir_username> <scan_type> <oasis_tau_project>
 ```
 
 Required inputs:
@@ -59,9 +61,13 @@ Required inputs:
 
 `<directory_name>` - A directory path (relative or absolute) to save the scan files to. If this directory doesn't exist when you run the script, it will be created automatically.
 
-`<xnat_central_username>` - Your XNAT Central username used for accessing OASIS data on central.xnat.org (you will be prompted for your password before downloading)
+`<nitrc_ir_username>` - Your NITRC-IR username used for accessing OASIS data on nitrc.org/ir (you will be prompted for your password before downloading)
 
-`<scan_type>` - (Optional) The scan type of the scan you want to download. (e.g. T1w, angio, bold, fieldmap, FLAIR) You can also enter multiple scan types separated by a comma with no whitespace (e.g. T2w,swi,bold). Without this argument, all scans for the given experiment_id will be downloaded.
+Optional inputs:
+
+`<scan_type>` - (Optional) The scan type of the scan you want to download. (e.g. T1w, angio, bold, fieldmap, FLAIR) You can also enter multiple scan types separated by a comma with no whitespace (e.g. T2w,swi,bold). Without this argument, all scans for the given experiment_id will be downloaded. If you do not need to specify a single scan type but you want to use the `<oasis_tau_project_id>` input parameter to specify whether to download from OASIS3_AV1451 or OASIS3_AV1451L, you must enter "ALL" or a set of empty double quotes `""` in place of this input.
+
+`<oasis_tau_project_id>` - (Optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, specify which project to download from. Other OASIS projects will be chosen automatically based on session label. If you want to use this option but not specify a particular `<scan_type>` option, you must specify `<scan_type>` as "ALL" or a set of empty double quotes `""`. If this input is not specified and you are downloading an OASIS PET session that contains "AV1451" in the session label, the download scripts will default to downloading from OASIS3_AV1451 unless this input is specified. 
 
 
 This script organizes the files into folders like this:
@@ -94,11 +100,11 @@ directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
 
 See [Detailed instructions on how to run these scripts](https://github.com/NrgXnat/oasis-scripts#detailed-instructions-on-how-to-run-these-scripts) for more details on how to run the script.
 
-### Notes on OASIS3 and OASIS4 BIDS formatting
+### Notes on OASIS BIDS formatting
 
-The OASIS3 and OASIS4 BIDS files use version 1.0.1 of the BIDS specification, so if you plan to use a BIDS validator on downloaded OASIS data, make sure your validator software can validate to that version. This is an older version of the BIDS specification and there may be formatting that does not match current specifications or fields that were not incorporated into the BIDS specification until later in its development. _The OASIS3 and OASIS4 BIDS files will not be updated to newer BIDS specifications._ 
+The OASIS BIDS files use version 1.0.1 of the BIDS specification, so if you plan to use a BIDS validator on downloaded OASIS data, make sure your validator software can validate to that version. This is an older version of the BIDS specification and there may be formatting that does not match current specifications or fields that were not incorporated into the BIDS specification until later in its development. _The OASIS BIDS files will not be updated to newer BIDS specifications._ 
 
-One specific conflict that has been found with newer BIDS specifications is the labeling of the task name for OASIS BOLD scans. For any OASIS3 and OASIS4 BOLD data the task name should be "rest". If you require OASIS JSON files to match a newer BIDS specification, you can modify your downloaded copy of any BOLD scan JSON files to meet the specification version you require.
+One specific conflict that has been found with newer BIDS specifications is the labeling of the task name for OASIS BOLD scans. For any OASIS BOLD data the task name should be "rest". If you require OASIS JSON files to match a newer BIDS specification, you can modify your downloaded copy of any BOLD scan JSON files to meet the specification version you require.
 
 Details on the BIDS specification number and citation details for the OASIS datasets can be found in the dataset description files which are located at the MR and PET session level, under "Manage Files", in the "resources" folder (first folder in the Manage Files list), "BIDS" subfolder, in the `dataset_description.json` file for each session. 
 
@@ -115,7 +121,7 @@ Use `download_oasis_freesurfer.sh` if you are on Linux or Mac and have the `zip`
 
 Usage: 
 ```
-./download_oasis_freesurfer.sh <input_file.csv> <directory_name> <xnat_central_username>
+./download_oasis_freesurfer.sh <input_file.csv> <directory_name> <nitrc_ir_username>
 ```
 
 Required inputs:
@@ -124,7 +130,7 @@ Required inputs:
 
 `<directory_name>` - A directory path (relative or absolute) to save the scan files to. If this directory doesn't exist when you run the script, it will be created automatically.
 
-`<xnat_central_username>` - Your XNAT Central username used for accessing OASIS data on central.xnat.org (you will be prompted for your password before downloading)
+`<nitrc_ir_username>` - Your NITRC-IR username used for accessing OASIS data on nitrc.org/ir (you will be prompted for your password before downloading)
 
 
 This script organizes the files into folders such that the directory `directory name/OAS30001_MR_d0129/` will contain all the Freesurfer data folders. 
@@ -142,7 +148,7 @@ Use `download_oasis_pup.sh` if you are on Linux or Mac and have the `zip` progra
 
 Usage: 
 ```
-./download_oasis_pup.sh <input_file.csv> <directory_name> <xnat_central_username>
+./download_oasis_pup.sh <input_file.csv> <directory_name> <nitrc_ir_username> <oasis_tau_project_id>
 ```
 
 Required inputs:
@@ -151,7 +157,11 @@ Required inputs:
 
 `<directory_name>` - A directory path (relative or absolute) to save the scan files to. If this directory doesn't exist when you run the script, it will be created automatically.
 
-`<xnat_central_username>` - Your XNAT Central username used for accessing OASIS data on central.xnat.org (you will be prompted for your password before downloading)
+`<nitrc_ir_username>` - Your NITRC-IR username used for accessing OASIS data on nitrc.org/ir (you will be prompted for your password before downloading)
+
+Optional inputs:
+
+`<oasis_tau_project_id>` - (Optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, specify which project to download from. Other OASIS projects will be chosen automatically based on session label. If this input is not specified and you are downloading an OASIS PET session that contains "AV1451" in the session label, the download scripts will default to downloading from OASIS3_AV1451 unless this input is specified. 
 
 
 This script organizes the files into folders such that the directory `directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/` will contain all the PUP files. 
@@ -161,15 +171,15 @@ This script organizes the files into folders such that the directory `directory_
 
 ## session_matchup/oasis_data_matchup.R 
 
-This script takes in two OASIS3 or OASIS4 .csv formatted spreadsheets and matches up the sessions based on your requested days from entry distance requirements. This script requires R at least version 3.3.0 and the R data.table library minimum version 1.12.8. See the [R-project website](https://www.r-project.org/) for more details on the R language and visit the [R data.table library website](https://rdatatable.gitlab.io/data.table/) for more details on the data.table library. 
+This script takes in two OASIS .csv formatted spreadsheets and matches up the sessions based on your requested days from entry distance requirements. This script requires R at least version 3.3.0 and the R data.table library minimum version 1.12.8. See the [R-project website](https://www.r-project.org/) for more details on the R language and visit the [R data.table library website](https://rdatatable.gitlab.io/data.table/) for more details on the data.table library. 
 
-OASIS3 or OASIS4 data has been anonymized and dates have been eliminated from the data sets. OASIS3 and OASIS4 instead use "days from entry" to note when scan sessions and questionnaire sessions happen relative to each other. The "days from entry" variable is seen in OASIS3 or OASIS4 IDs for MR sessions, PET sessions, Freesurfer assessors, PUP assessors, and questionnaire sessions (such as ADRC Clinical Data entries or UDS form entries). At the end of each ID is a string `d0000` where 0000 is the days since the subject's entry date into the study. A days from entry value of 0 means that this is the subject's first visit.
+OASIS data has been anonymized and dates have been eliminated from the data sets. OASIS3, OASIS4, OASIS3_AV1451, and OASIS3_AV1451L sessions and processing instead use "days from entry" to note when scan sessions and questionnaire sessions happen relative to each other. The "days from entry" variable is seen in OASIS IDs for MR sessions, PET sessions, Freesurfer assessors, PUP assessors, and questionnaire sessions (such as ADRC Clinical Data entries or UDS form entries). At the end of each ID is a string `d0000` where 0000 is the days since the subject's entry date into the study. A days from entry value of 0 means that this is the subject's first visit.
 
 Scan sessions and questionnaire sessions do not always happen at the same visit. If for example you are trying to find a corresponding ADRC Clinical Data entry for a given MR session, you must first choose a criteria for how long from a particular MR session you will consider a corresponding ADRC Clinical Data entry to be "valid". A common criteria is to consider all ADRC Clinical Data entries within 1 year before or after the MR session date to be valid. In this case you would consider the closest ADRC Clinical Data entry to the MR session to be a "match" as long as its days from entry value is within 365 days before or within 365 days after the MR session's days from entry value. 
 
-A script has been created to help match up the data values. It takes as required input two CSV files of data that you must download from OASIS3 or OASIS4. For more information on that, see the "[Creating a CSV file](#creating-a-csv-file-for-use-with-these-scripts)" section of this README. 
+A script has been created to help match up the data values. It takes as required input two CSV files of data that you must download from the OASIS dataset. For more information on that, see the "[Creating a CSV file](#creating-a-csv-file-for-use-with-these-scripts)" section of this README. 
 
-When you set up your CSV files, the first two columns must contain specific IDs and be in a specific order. The first column in each spreadsheet MUST be the OASIS ID that contains a days-from-entry value at the end of it (e.g. `OAS30001_MR_d0000` in the MR session spreadsheet, and `OAS30003_ClinicalData_d0123`, etc.). The second column MUST be the OASIS subject ID (e.g. `OAS30001` in the MR session spreadsheet, and `OAS30003` in the ADRC Clinical Data entry spreadsheet). You can select these columns using the Edit Columns feature of an XNAT search. For more details on searching, modifying which columns are displayed, and downloading spreadsheets, see the [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html) page of the XNAT wiki. 
+When you set up your CSV files, the first two columns must contain specific IDs and be in a specific order. The first column in each spreadsheet MUST be the OASIS ID that contains a days-from-entry value at the end of it (e.g. `OAS30001_MR_d0000` in the MR session spreadsheet, and `OAS30003_ClinicalData_d0123`, etc.). The second column MUST be the OASIS subject ID (e.g. `OAS30001` in the MR session spreadsheet, and `OAS30003` in the ADRC Clinical Data entry spreadsheet). You can select these columns using the Edit Columns feature of an XNAT search. More details on browsing XNAT data can be found on the XNAT wiki here: [Browsing data types on XNAT](https://wiki.xnat.org/documentation/browsing-data-types). Use the "Spreadsheet" option under the "Options" menu to download a spreadsheet of your selected data.
 
 You must also determine which order you want to match in. In the script, each entry in "list1" will receive one matched entry from "list2" if a "list2" entry meets your days from entry distance criteria. 
 
@@ -180,9 +190,9 @@ Rscript oasis_data_matchup.R <list1.csv> <list2.csv> <num_days_before> <num_days
 
 Required inputs:
 
-`<list1.csv>` - A Unix formatted, comma-separated file containing your "list 1" entry data. This can also include other columns of data, but the first column MUST be the OASIS3 or OASIS4 type ID that contains the "days from entry" at the end as described above. The second column MUST be the subject ID as described above.
+`<list1.csv>` - A Unix formatted, comma-separated file containing your "list 1" entry data. This can also include other columns of data, but the first column MUST be the OASIS type ID that contains the "days from entry" at the end as described above. The second column MUST be the subject ID as described above.
 
-`<list2.csv>` - A Unix formatted, comma-separated file containing your "list 2" entry data. This can also include other columns of data, but the first column MUST be the OASIS3 or OASIS4 type ID that contains the "days from entry" at the end as described above. The second column MUST be the subject ID as described above.
+`<list2.csv>` - A Unix formatted, comma-separated file containing your "list 2" entry data. This can also include other columns of data, but the first column MUST be the OASIS type ID that contains the "days from entry" at the end as described above. The second column MUST be the subject ID as described above.
 
 `<num_days_before>` - A positive integer value. This should be the maximum number of days before a list1 element that a "matched" list2 element should occur.
 
@@ -221,10 +231,10 @@ Move the resulting csv file(s) into the same folder as the script.
 If you are **downloading**, run the download_oasis_scans script using the following command:
 
 ```
-./download_oasis_scans.sh <input_file.csv> <directory_name> <xnat_central_username> <scan_type>
+./download_oasis_scans.sh <input_file.csv> <directory_name> <nitrc_ir_username> <scan_type>
 ```
 
-Where `<input_file.csv>` is the name of the file containing the list of OASIS experiment IDs, `<directory_name>` is the name of your empty directory, `<xnat_central_username>` is your XNAT Central username, and `<scan_type>` is the scan type you would like to download. Adding scan_type is optional, and without it all the scans will be downloaded. If you choose to include the scan type option, choose from the [list of available scan types](https://github.com/NrgXnat/oasis-scripts#list-of-available-scan-types) below. You can enter a single scan type such as `T1w`, a comma-separated list with no spaces such as `T1w,T2w,FLAIR`, or leave it out completely. A couple of example commands:
+Where `<input_file.csv>` is the name of the file containing the list of OASIS experiment IDs, `<directory_name>` is the name of your empty directory, `<nitrc_ir_username>` is your NITRC-IR username, and `<scan_type>` is the scan type you would like to download. Adding scan_type is optional, and without it all the scans will be downloaded. If you choose to include the scan type option, choose from the [list of available scan types](https://github.com/NrgXnat/oasis-scripts#list-of-available-scan-types) below. You can enter a single scan type such as `T1w`, a comma-separated list with no spaces such as `T1w,T2w,FLAIR`, or leave it out completely. A couple of example commands:
 
 ```
 # Download T1w, T2w, and FLAIR scans from the sessions listed in myfile.csv
@@ -241,7 +251,7 @@ The files for the scans from each experiment ID in your list should begin downlo
 ## List of available scan type names for downloading
 
 When downloading, if you are entering `scan_type` into your script, use any of the following names: `angio`, `asl`, `bold`, `dwi`, `fieldmap`, `FLAIR`, `GRE`, `minIP`, `swi`, `T1w`, `T2star`, `T2w`
-For more information on these scan types, see the [OASIS Imaging Data Dictionary](https://www.oasis-brains.org/files/OASIS-3_Imaging_Data_Dictionary_v1.5.pdf). 
+For more information on these scan types, see the [OASIS Imaging Data Dictionary](https://sites.wustl.edu/oasisbrains/files/2024/04/OASIS-3_Imaging_Data_Dictionary_v2.3-a93c947a586e7367.pdf). 
 
 
 ## Matching Up
@@ -270,9 +280,9 @@ After running the matchup script, the output file you specify should then contai
 
 # Creating a CSV file for use with these scripts
 
-When you run any of the scripts, you will need to download or create a CSV of OASIS experiment IDs or Freesurfer IDs to use as an input to the script. This can be created from a search result table on XNAT Central, described on the XNAT Wiki on the [OASIS on XNAT Central](https://wiki.xnat.org/central/oasis-on-xnat-central-60981641.html) page. 
+When you run any of the scripts, you will need to download or create a CSV of OASIS experiment IDs or Freesurfer IDs to use as an input to the script. This can be created from a NITRC-IR OASIS project page tab, or a NITRC-IR Advanced Search result table. More details on browsing XNAT data can be found on the XNAT wiki here: [Browsing data types on XNAT](https://wiki.xnat.org/documentation/browsing-data-types) and [Using the Advanced Search on XNAT](https://wiki.xnat.org/documentation/using-the-advanced-search). Use the "Spreadsheet" option under the "Options" menu to download a spreadsheet of your selected data once you have a data table with the information you need.
 
-- From an MR Session search, use **Options** then **Edit Columns** to include the "MR ID" column in your column view. If you are doing a PET Session search, include the "PET ID" column. If you are downloading Freesurfer files, use the Freesurfer tab from the OASIS project page, or do an Advanced Search for Freesurfers and specify the OASIS3 or OASIS4 project. Then include the "Freesurfer ID" column in your column view.
+- From an MR Session search, use **Options** then **Edit Columns** to include the "MR ID" column in your column view. If you are doing a PET Session search, include the "PET ID" column. If you are downloading Freesurfer files, use the Freesurfer tab from the OASIS project page, or do an Advanced Search for Freesurfers and specify the OASIS3, OASIS4, OASIS3_AV1451, or OASIS3_AV1451L project. Then include the "Freesurfer ID" column in your column view.
 - Download the resulting table by selecting **Options** then **Spreadsheet**. 
 - Once you download a spreadsheet, remove all columns from it except for the "MR ID" column and save it as a .csv file. This can be done In Microsoft Excel by selecting Save As and choosing "CSV (Comma delimited) \*.csv" as the file type. 
 - If you plan to run your data through a script, you may want to remove any entries for the "0AS_data_files" or "0AS4_data_files" subjects described earlier and download those separately into another folder. Those subject entries and session pages do not contain actual participant data but instead contain general .csv data files with details on the entire dataset.

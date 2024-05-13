@@ -2,6 +2,10 @@
 
 This is a changelog to track changes to the OASIS database.
 
+## 5/09/2024
+
+All OASIS projects that require use of the download scripts (OASIS3, OASIS4, OASIS3_AV1451, OASIS3_AV1451L) have been moved to NITRC Image Repository (NITRC-IR) located at https://nitrc.org/ir. The former XNAT Central website is no longer active. Scripts have been updated to reflect the new XNAT URL. Scripts and data navigation should continue to function the same way as long as the NITRC-IR URL (https://nitrc.org/ir) is used.
+
 ## 4/14/2024
 
 Corrected scan files for PET session:

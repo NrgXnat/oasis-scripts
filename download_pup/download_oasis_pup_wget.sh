@@ -4,23 +4,25 @@
 # download_oasis_pup_tar.sh
 #================================================================
 #
-# Usage: ./download_oasis_pup_tar.sh <input_file.csv> <directory_name> <xnat_central_username>
+# Usage: ./download_oasis_pup_tar.sh <input_file.csv> <directory_name> <nitrc_ir_username>
 # 
-# Download PET Unified Pipeline (PUP) files from OASIS3 or OASIS4 on XNAT Central and organize the files - uses "tar" instead of "zip"
+# Download PET Unified Pipeline (PUP) files from OASIS3 or OASIS4 on NITRC IR and organize the files - uses "tar" instead of "zip"
 #
 # Required inputs:
 # <input_file.csv> - A Unix formatted, comma-separated file containing a column for pup_id 
 #       (e.g. OAS30001_AV45_PUPTIMECOURSE_d2430)
 # <directory_name> - A directory path (relative or absolute) to save the PUP files to
-# <xnat_central_username> - Your XNAT Central username used for accessing OASIS data on central.xnat.org
+# <nitrc_ir_username> - Your NITRC IR username used for accessing OASIS data on nitrc.org/ir
 #       (you will be prompted for your password before downloading)
+# <tau_project_id> - (optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, 
+#       specify which project to download from. Other OASIS projects will be chosen automatically based on session label."
 #
 # This script organizes the files into folders like this:
 #
 # directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/$PUP_FOLDERS
 #
 #
-# Last Updated: 9/6/2023
+# Last Updated: 5/14/2024
 # Author: Sarah Keefe
 #
 #
@@ -33,17 +35,19 @@ if [ ${#@} == 0 ]; then
     echo ""
     echo "This script downloads PUP files based on a list of session ids in a csv file. "
     echo ""   
-    echo "Usage: $0 input_file.csv directory_name central_username scan_type"
+    echo "Usage: $0 input_file.csv directory_name nitrc_username scan_type"
     echo "<input_file>: A Unix formatted, comma separated file containing the following columns:"
     echo "    pup_id (e.g. OAS30001_AV45_PUPTIMECOURSE_d2430)"
     echo "<directory_name>: Directory path to save Freesurfer files to"  
-    echo "<xnat_central_username>: Your XNAT Central username used for accessing OASIS data (you will be prompted for your password)"  
+    echo "<nitrc_ir_username>: Your NITRC IR username used for accessing OASIS data (you will be prompted for your password)"  
+    echo "<tau_project_id>: (optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, specify which project to download from. Other OASIS projects will be chosen automatically based on session label."  
 else 
 
     # Get the input arguments
     INFILE=$1
     DIRNAME=$2
     USERNAME=$3
+    AV1451_PROJ_ID=$4
 
     # Create the directory if it doesn't exist yet
     if [ ! -d $DIRNAME ]
@@ -52,7 +56,7 @@ else
     fi
 
     # Read in password
-    read -s -p "Enter your password for accessing OASIS data on XNAT Central:" PASSWORD
+    read -s -p "Enter your password for accessing OASIS data on NITRC IR:" PASSWORD
 
     echo ""
 
@@ -79,17 +83,24 @@ else
             PROJECT_ID=OASIS4
         fi
 
-        # If the experiment ID provided starts with OAS3XXXXX_AV1451 then use project=OASIS3_AV1451 in the URL
+        # If the experiment ID provided starts with OAS3XXXXX_AV1451 then check if "AV1451_PROJ_ID" is set
+        # If so, use that as the project ID. Otherwise use project=OASIS3_AV1451 in the URL
         if [[ "${EXPERIMENT_LABEL}" == "OAS3"*"_AV1451"* ]]; then
-            PROJECT_ID=OASIS3_AV1451
-            # Use the line below if you are downloading longitudinal AV1451 data from the OASIS3_AV1451L project
-            #PROJECT_ID=OASIS3_AV1451L
+            if [[ "${AV1451_PROJ_ID}" == "OASIS3_AV1451" ]] || [[ "${AV1451_PROJ_ID}" == "OASIS3_AV1451L" ]]; then
+                echo "Tau project ID ${AV1451_PROJ_ID} was specified. Downloading from ${AV1451_PROJ_ID}."
+                PROJECT_ID=${AV1451_PROJ_ID}
+            else
+                PROJECT_ID=OASIS3_AV1451
+                # You can also uncomment the line below if you are downloading longitudinal AV1451 data
+                # and don't want to send AV1451_PROJ_ID as an input to this script.
+                #PROJECT_ID=OASIS3_AV1451L
+            fi
         fi
 
         echo "Checking for PUP ID ${PUP_ID} associated with ${EXPERIMENT_LABEL}."
 
         # Set up the download URL and make a wget call to download the requested scans in tar.gz format
-        download_url=https://central.xnat.org/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${PUP_ID}/files?format=tar.gz
+        download_url=https://nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${PUP_ID}/files?format=tar.gz
 
         wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$PUP_ID.tar.gz "$download_url"
 
