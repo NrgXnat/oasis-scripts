@@ -291,7 +291,14 @@ When you run any of the scripts, you will need to download or create a CSV of OA
 
 ### Note on Unix file formatting
 
-The comma-separated file you send to the script must be Unix-formatted - the file must not have Microsoft Windows line endings. If the file is incorrectly formatted, you may receive "Illegal character" errors when you run the script, or see "\\r" characters in the script output and experience download failures. To fix this, you can use one of the following options:
+The comma-separated file you send to the script must be Unix-formatted - the file must not have Microsoft Windows line endings. If the file is incorrectly formatted, you may see the following errors:
+
+- "Illegal character" errors when you run the script
+- Output that looks like `.ownloading all scans for OAS30001_MR_d0129` (with a dot at the beginning of some lines)
+- Output messages like `curl: (3) URL rejected: Malformed input to a URL function` (Malformed URL errors from the `curl` command in the script)
+- Output that looks like `rm: cannot remove 'bids/OAS30001_MR_d0757'$'\r''.tar.gz'` (containing a '\r' in the output)
+
+These are indicators that your input CSV file is not in Unix format, and you will not be able to download the data with the file format you have. To correct your file's formatting, you can use one of the following options:
 
 
 #### Using Microsoft Notepad
