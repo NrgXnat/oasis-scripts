@@ -102,7 +102,7 @@ else
 
         # If the experiment ID provided starts with OAS3XXXXX_AV1451 then check if "AV1451_PROJ_ID" is set
         # If so, use that as the project ID. Otherwise use project=OASIS3_AV1451 in the URL
-        if [[ "${EXPERIMENT_LABEL}" == "OAS3"*"_AV1451"* ]]; then
+        if [[ "${EXPERIMENT_ID}" == "OAS3"*"_AV1451"* ]]; then
             if [[ "${AV1451_PROJ_ID}" == "OASIS3_AV1451" ]] || [[ "${AV1451_PROJ_ID}" == "OASIS3_AV1451L" ]]; then
                 echo "Tau project ID ${AV1451_PROJ_ID} was specified. Downloading from ${AV1451_PROJ_ID}."
                 PROJECT_ID=${AV1451_PROJ_ID}
