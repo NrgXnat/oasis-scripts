@@ -22,7 +22,7 @@
 # directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/$PUP_FOLDERS
 #
 #
-# Last Updated: 5/14/2024
+# Last Updated: 6/27/2024
 # Author: Sarah Keefe
 #
 #
@@ -100,7 +100,7 @@ else
         echo "Checking for PUP ID ${PUP_ID} associated with ${EXPERIMENT_LABEL}."
 
         # Set up the download URL and make a wget call to download the requested scans in tar.gz format
-        download_url=https://nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${PUP_ID}/files?format=tar.gz
+        download_url=https://www.nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${PUP_ID}/files?format=tar.gz
 
         wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$PUP_ID.tar.gz "$download_url"
 

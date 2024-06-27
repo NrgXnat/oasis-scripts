@@ -20,7 +20,7 @@
 # directory_name/OAS30001_MR_d0129/$FREESURFER_FOLDERS
 #
 #
-# Last Updated: 5/13/2024
+# Last Updated: 6/27/2024
 # Author: Sarah Keefe
 #
 #
@@ -34,7 +34,7 @@ unset module
 startSession() {
     # Authentication to XNAT and store cookies in cookie jar file
     local COOKIE_JAR=.cookies-$(date +%Y%M%d%s).txt
-    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://nitrc.org/ir/data/JSESSION" > /dev/null
+    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://www.nitrc.org/ir/data/JSESSION" > /dev/null
     echo ${COOKIE_JAR}
 }
 
@@ -64,7 +64,7 @@ get() {
 # Ends the user session.
 endSession() {
     # Delete the JSESSION token - "log out"
-    curl -i -k --cookie ${COOKIE_JAR} -X DELETE "https://nitrc.org/ir/data/JSESSION"
+    curl -i -k --cookie ${COOKIE_JAR} -X DELETE "https://www.nitrc.org/ir/data/JSESSION"
     rm -f ${COOKIE_JAR}
 }
 
@@ -123,7 +123,7 @@ else
         echo "Checking for Freesurfer ID ${FREESURFER_ID} associated with ${EXPERIMENT_LABEL}."
 
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
-        download_url=https://nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
+        download_url=https://www.nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_LABEL}/assessors/${FREESURFER_ID}/files?format=tar.gz
 
         download $DIRNAME/$FREESURFER_ID.tar.gz $download_url
 

@@ -34,7 +34,7 @@
 # directory_name/sub-subjectname/ses-sessionname/func/sub-subjectname_bold.nii.gz
 # etc.
 #
-# Last Updated: 5/13/2024
+# Last Updated: 6/27/2024
 # Author: Sarah Keefe
 #
 #
@@ -48,7 +48,7 @@ unset module
 startSession() {
     # Authentication to XNAT and store cookies in cookie jar file
     local COOKIE_JAR=.cookies-$(date +%Y%M%d%s).txt
-    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://nitrc.org/ir/data/JSESSION" > /dev/null
+    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://www.nitrc.org/ir/data/JSESSION" > /dev/null
     echo ${COOKIE_JAR}
 }
 
@@ -78,7 +78,7 @@ get() {
 # Ends the user session.
 endSession() {
     # Delete the JSESSION token - "log out"
-    curl -i -k --cookie ${COOKIE_JAR} -X DELETE "https://nitrc.org/ir/data/JSESSION"
+    curl -i -k --cookie ${COOKIE_JAR} -X DELETE "https://www.nitrc.org/ir/data/JSESSION"
     rm -f ${COOKIE_JAR}
 }
 
@@ -351,7 +351,7 @@ else
         fi        
 
         # Set up the download URL and make a call to download the requested scans in tar.gz format
-        download_url=https://nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
+        download_url=https://www.nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
         echo $download_url
 
@@ -371,7 +371,7 @@ else
 
             # Grab the dataset_description file and put it in the session directory
             # Set up the URL and make a call to download the dataset_description file
-            dataset_description_url=https://nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
+            dataset_description_url=https://www.nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/resources/BIDS/files/dataset_description.json
             download $DIRNAME/$subject_folder/$session_folder/dataset_description.json "$dataset_description_url"
 
             # Fix for https://github.com/NrgXnat/oasis-scripts/issues/11 part 1

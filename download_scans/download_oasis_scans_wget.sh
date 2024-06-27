@@ -29,7 +29,7 @@
 # directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 #
 #
-# Last Updated: 5/13/2024
+# Last Updated: 6/27/2024
 # Author: Sarah Keefe
 #
 #
@@ -115,7 +115,7 @@ else
         fi    
 
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
-        download_url=https://nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
+        download_url=https://www.nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
         wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
 
