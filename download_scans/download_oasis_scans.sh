@@ -99,7 +99,7 @@ else
     # Get the input arguments
     INFILE=$1
     DIRNAME=$2
-    USERNAME=$3
+    USERNAME=`echo $3 | tr 'A-Z' 'a-z'`
 
     if [ $# -ge 4 ]
     then
