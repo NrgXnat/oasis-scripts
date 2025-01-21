@@ -175,7 +175,7 @@ else
             # Remove the unzipped directory structure
             rm -rf $DIRNAME/$PUP_ID/out
 
-            # Remove the Freesurfer zip file that the files were moved from
+            # Remove the PUP zip file that the files were moved from
             rm -r $DIRNAME/$PUP_ID.zip
         else
             echo "Could not download PUP ${PUP_ID} in ${EXPERIMENT_LABEL}."           

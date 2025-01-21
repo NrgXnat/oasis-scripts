@@ -11,6 +11,7 @@
   * [download_freesurfer/download_oasis_freesurfer.sh](#download_freesurferdownload_oasis_freesurfersh)
 - [Downloading PET Unified Pipeline (PUP) files](#downloading-pet-unified-pipeline-pup-files)
   * [download_pup/download_oasis_pup.sh](#download_pupdownload_oasis_pupsh)
+  * [download_pup/./download_oasis_pup_files_by_partial_filename_match.sh](#download_pupdownload_oasis_pup_files_by_partial_filename_matchsh)
 - [Matching Up Session Data by Days From Entry](#matching-up-session-data-by-days-from-entry)
   * [session_matchup/oasis_data_matchup.R](#session_matchupoasis_data_matchupr)
 - [Detailed instructions on how to run these scripts](#detailed-instructions-on-how-to-run-these-scripts)
@@ -163,6 +164,33 @@ Optional inputs:
 
 `<oasis_tau_project_id>` - (Optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, specify which project to download from. Other OASIS projects will be chosen automatically based on session label. If this input is not specified and you are downloading an OASIS PET session that contains "AV1451" in the session label, the download scripts will default to downloading from OASIS3_AV1451 unless this input is specified. 
 
+
+This script organizes the files into folders such that the directory `directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/` will contain all the PUP files. 
+
+## download_pup/download_oasis_pup_files_by_partial_filename_match.sh 
+
+If you need to download a single type of PUP file based on the filenames, the `download_oasis_pup_files_by_partial_filename_match` in the `pup` folder can be used to download files that have a particular string in the filename.
+
+`download_oasis_pup.sh` requires you to have the `curl` and `zip` programs callable from your command line. 
+
+Usage: 
+```
+./download_oasis_pup_files_by_partial_filename_match.sh <input_file.csv> <directory_name> <nitrc_ir_username> <filename_string_to_match> <oasis_tau_project_id>
+```
+
+Required inputs:
+
+`<input_file.csv>` - A Unix formatted, comma-separated file containing a column for pup_id (e.g. OAS30001_AV45_PUPTIMECOURSE_d2430)
+
+`<directory_name>` - A directory path (relative or absolute) to save the scan files to. If this directory doesn't exist when you run the script, it will be created automatically.
+
+`<nitrc_ir_username>` - Your NITRC-IR username used for accessing OASIS data on nitrc.org/ir (you will be prompted for your password before downloading)
+
+`<filename_string_to_match>` - A string without spaces or special characters that is found in the filenames you wish to download. For example, to download all files containing "msum" enter "msum" for this argument.
+
+Optional inputs:
+
+`<oasis_tau_project_id>` - (Optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, specify which project to download from. Other OASIS projects will be chosen automatically based on session label. If this input is not specified and you are downloading an OASIS PET session that contains "AV1451" in the session label, the download scripts will default to downloading from OASIS3_AV1451 unless this input is specified. 
 
 This script organizes the files into folders such that the directory `directory_name/OAS30001_AV45_PUPTIMECOURSE_d2430/` will contain all the PUP files. 
 
