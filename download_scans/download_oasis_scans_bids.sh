@@ -141,6 +141,9 @@ function move_to_bids () {
             # d0129
             scan_session=`echo $scan_session_ses | cut -d- -f2`
 
+            # ensure 4 digits formatting in scan_session
+            scan_session="${scan_session/${scan_session:1}/$(printf "%04d" "${scan_session:1}")}"
+
             # Create the folder structure based on the labels gathered
             subject_folder=sub-${scan_subject}
             session_folder=ses-${scan_session}

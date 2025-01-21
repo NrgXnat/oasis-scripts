@@ -29,7 +29,7 @@
 # directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 #
 #
-# Last Updated: 6/27/2024
+# Last Updated: 7/10/2024
 # Author: Sarah Keefe
 #
 #
@@ -43,8 +43,11 @@ unset module
 startSession() {
     # Authentication to XNAT and store cookies in cookie jar file
     local COOKIE_JAR=.cookies-$(date +%Y%M%d%s).txt
-    curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://www.nitrc.org/ir/data/JSESSION" > /dev/null
+    if ! curl -f -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "https://www.nitrc.org/ir/data/JSESSION" > /dev/null; then
+        return 1
+    fi
     echo ${COOKIE_JAR}
+    return 0
 }
 
 # Downloads a resource from a URL and stores the results to the specified path. The first parameter
@@ -96,7 +99,7 @@ else
     # Get the input arguments
     INFILE=$1
     DIRNAME=$2
-    USERNAME=$3
+    USERNAME=`echo $3 | tr 'A-Z' 'a-z'`
 
     if [ $# -ge 4 ]
     then
@@ -121,7 +124,10 @@ else
 
     echo ""
 
-    COOKIE_JAR=$(startSession)
+    if ! COOKIE_JAR=$(startSession); then
+        echo "Error starting session.  Maybe a bad username/password?"
+        exit 1
+    fi
 
     # Read the file
     sed 1d $INFILE | while IFS=, read -r EXPERIMENT_ID; do
