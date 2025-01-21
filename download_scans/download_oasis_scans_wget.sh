@@ -29,7 +29,7 @@
 # directory_name/OAS30001_MR_d0129/anat4/file.nii.gz
 #
 #
-# Last Updated: 6/27/2024
+# Last Updated: 7/12/2024
 # Author: Sarah Keefe
 #
 #
@@ -79,6 +79,14 @@ else
 
     echo ""
 
+    COOKIES_FILE=.cookies-$(date +%Y%M%d%s).txt
+
+    if ! wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate --save-cookies ${COOKIES_FILE} --keep-session-cookies -O /dev/null https://www.nitrc.org/ir/data/JSESSION; then
+        echo "Error starting session.  Maybe a bad username/password?"
+        rm -f ${COOKIES_FILE}
+        exit 1
+    fi
+
     # Read the file
     sed 1d $INFILE | while IFS=, read -r EXPERIMENT_ID; do
 
@@ -117,7 +125,7 @@ else
         # Set up the download URL and make a cURL call to download the requested scans in tar.gz format
         download_url=https://www.nitrc.org/ir/data/archive/projects/${PROJECT_ID}/subjects/${SUBJECT_ID}/experiments/${EXPERIMENT_ID}/scans/${SCANTYPE}/files?format=tar.gz
 
-        wget --http-user=$USERNAME --http-password=$PASSWORD --auth-no-challenge --no-check-certificate -O $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
+        wget --load-cookies ${COOKIES_FILE} --no-check-certificate -O $DIRNAME/$EXPERIMENT_ID.tar.gz "$download_url"
 
         # Check the tar.gz file to make sure we downloaded something
         # If the tar.gz file is invalid, we didn't download a scan so there is probably no scan of that type
@@ -175,4 +183,8 @@ else
         echo "Done with ${EXPERIMENT_ID}."
 
     done < $INFILE
+
+    wget -O /dev/null --method=DELETE --load-cookies ${COOKIES_FILE} --no-check-certificate https://www.nitrc.org/ir/data/JSESSION
+    rm -f ${COOKIES_FILE}
+
 fi
