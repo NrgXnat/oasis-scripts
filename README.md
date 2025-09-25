@@ -1,6 +1,7 @@
 # Table of Contents
 
 - [OASIS Scripts Overview](#oasis3-and-oasis4-scripts-overview)
+  * [Note on accessing OASIS data on the NITRC-IR](#note-on-accessing-oasis-on-nitrc)
   * [Brief description of scan and participant data](#brief-description-of-scan-and-participant-data)
 - [Downloading MR and PET Scan files](#downloading-mr-and-pet-scan-files)
   * [download_scans/download_oasis_scans.sh](#download_scansdownload_oasis_scanssh)
@@ -32,6 +33,10 @@ This repository contains scripts that can be used to download files from the OAS
 These scripts are not needed for OASIS1 and OASIS2 data access. That data can be downloaded directly as zip files from the [OASIS website](https://www.oasis-brains.org)
 
 For reference, the OASIS data dictionary can be found [here](https://sites.wustl.edu/oasisbrains/files/2024/04/OASIS-3_Imaging_Data_Dictionary_v2.3-a93c947a586e7367.pdf) and on [oasis-brains.org](https://www.oasis-brains.org).
+
+## Note on accessing OASIS data on the NITRC-IR
+
+If you are trying to download data from one of the OASIS projects on the NITRC-IR shortly after recieving access and are encountering errors, you may need your user's access cache reset. This can be done by resetting your password on [this page](https://www.nitrc.org/account/lostpw.php), or by simply waiting a few days for the cache to automatically reset.
 
 ## Brief description of scan and participant data
 

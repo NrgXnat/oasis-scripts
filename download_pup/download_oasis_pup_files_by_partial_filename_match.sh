@@ -4,7 +4,7 @@
 # download_pup_files_by_partial_match.sh
 #================================================================
 #
-# Usage: ./download_pup_files_by_partial_match.sh <input_file.csv> <directory_name> <xnat_username> <site> "string_to_match" <av1451_project_id_optional>
+# Usage: ./download_pup_files_by_partial_match.sh <input_file.csv> <directory_name> <nitrc_ir_username> "string_to_match" <av1451_project_id_optional>
 # 
 # Download PUP output files that match a specific string 
 # from an XNAT site based on a list of PUP CSVs and an input matching string.
@@ -13,7 +13,7 @@
 # <input_file.csv> - A Unix formatted, comma-separated file containing the following columns:
 #       FreeSurfer ID
 # <directory_name> - A directory path (relative or absolute) to save the scan files to
-# <xnat_username> - Your username used for accessing data on the given site
+# <nitrc_ir_username> - Your NITRC IR username used for accessing OASIS data on nitrc.org/ir
 #       (you will be prompted for your password before downloading)
 # <filename_to_match> - The string you want to match with the partial file name.
 # <tau_project_id> - (optional) if you are downloading from OASIS3_AV1451 or OASIS3_AV1451L, 
@@ -35,6 +35,18 @@ startSession() {
     local COOKIE_JAR=.cookies-$(date +%Y%M%d%s).txt
     curl -k -s -u ${USERNAME}:${PASSWORD} --cookie-jar ${COOKIE_JAR} "${SITE}/data/JSESSION" > /dev/null
     echo ${COOKIE_JAR}
+}
+
+# Takes in a string intended as a value in a URL, returns that string with all illegal characters escaped with percent-encoding
+# NOTE: When calling this function, make sure to feed the variable as a
+# string, i.e. `escape_chars_for_URL "${variable}"` for correct text handling from bash and sed
+escape_chars_for_URL() {
+    local input=${1}
+    
+    # escape characters
+    output=`echo "${input}" | sed -e 's/%/%25/g;' | sed -e 's/ /%20/g; s/</%3C/g; s/>/%3E/g; s/#/%23/g; s/+/%2B/g; s/{/%7B/g; s/}/%7D/g; s/|/%7C/g; s/\\\/%5C/g; s/\^/%5E/g; s/~/%7E/g; s/\[/%5B/g; s/\]/%5D/g; s/\`/%60/g; s/;/%3B/g; s/\//%2F/g; s/?/%3F/g; s/:/%3A/g; s/@/%40/g; s/=/%3D/g; s/&/%26/g; s/\\$/%24/g'`
+
+    echo ${output}
 }
 
 # Downloads a resource from a URL and stores the results to the specified path. The first parameter
@@ -94,6 +106,10 @@ else
     read -s -p "Enter your password for accessing data on ${SITE}:" PASSWORD
 
     echo ""
+
+    # escape username and password
+    USERNAME=`escape_chars_for_URL "${USERNAME}"`
+    PASSWORD=`escape_chars_for_URL "${PASSWORD}"`
 
     COOKIE_JAR=$(startSession)
 

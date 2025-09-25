@@ -52,6 +52,18 @@ startSession() {
     echo ${COOKIE_JAR}
 }
 
+# Takes in a string intended as a value in a URL, returns that string with all illegal characters escaped with percent-encoding
+# NOTE: When calling this function, make sure to feed the variable as a
+# string, i.e. `escape_chars_for_URL "${variable}"` for correct text handling from bash and sed
+escape_chars_for_URL() {
+    local input=${1}
+    
+    # escape characters
+    output=`echo "${input}" | sed -e 's/%/%25/g;' | sed -e 's/ /%20/g; s/</%3C/g; s/>/%3E/g; s/#/%23/g; s/+/%2B/g; s/{/%7B/g; s/}/%7D/g; s/|/%7C/g; s/\\\/%5C/g; s/\^/%5E/g; s/~/%7E/g; s/\[/%5B/g; s/\]/%5D/g; s/\`/%60/g; s/;/%3B/g; s/\//%2F/g; s/?/%3F/g; s/:/%3A/g; s/@/%40/g; s/=/%3D/g; s/&/%26/g; s/\\$/%24/g'`
+
+    echo ${output}
+}
+
 # Downloads a resource from a URL and stores the results to the specified path. The first parameter
 # should be the destination path and the second parameter should be the URL.
 download() {
@@ -131,6 +143,25 @@ function move_to_bids () {
             echo "scan filename is: ${SCAN_FILENAME}"
             echo "scan type is: ${SCAN_TYPE}"
 
+            # Fix for https://github.com/NrgXnat/oasis-scripts/issues/55
+            # Replace "_sess-" in filenames with BIDS-compliant "_ses-"
+            if [[ "${SCAN_FILENAME}" == *"_sess-"* ]]
+            then
+                echo "Updating 'sess' to 'ses' in filename for BIDS compliance."
+                UPDATED_SCAN_FILENAME=`echo ${SCAN_FILENAME} | sed 's/_sess-/_ses-/g'`
+                echo "Updated scan filename is ${UPDATED_SCAN_FILENAME}"
+
+                # get path
+                SCAN_PATH=`dirname "${SCAN_FILE_PATH}"`
+
+                # rename
+                mv $SCAN_PATH/${SCAN_FILENAME} $SCAN_PATH/${UPDATED_SCAN_FILENAME}
+
+                # set new name
+                SCAN_FILENAME=$UPDATED_SCAN_FILENAME
+                SCAN_FILE_PATH=$SCAN_PATH/${SCAN_FILENAME}
+            fi
+
             # sub-OAS30001
             scan_subject_sub=`echo $SCAN_FILENAME | cut -d_ -f1`
             # get just OAS30001
@@ -142,7 +173,9 @@ function move_to_bids () {
             scan_session=`echo $scan_session_ses | cut -d- -f2`
 
             # ensure 4 digits formatting in scan_session
-            scan_session="${scan_session/${scan_session:1}/$(printf "%04d" "${scan_session:1}")}"
+            # Fix for https://github.com/NrgXnat/oasis-scripts/issues/55
+            # converts to decimal to prevent bash from interpreting numbers with leading zeroes as octal
+            scan_session="${scan_session/${scan_session:1}/$(printf "%04d" "$((10#${scan_session:1}))")}"
 
             # Create the folder structure based on the labels gathered
             subject_folder=sub-${scan_subject}
@@ -315,6 +348,10 @@ else
     read -s -p "Enter your password for accessing OASIS data on NITRC IR:" PASSWORD
 
     echo ""
+
+    # escape username and password
+    USERNAME=`escape_chars_for_URL "${USERNAME}"`
+    PASSWORD=`escape_chars_for_URL "${PASSWORD}"`
 
     COOKIE_JAR=$(startSession)
 
