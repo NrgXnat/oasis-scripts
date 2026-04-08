@@ -152,8 +152,8 @@ This script organizes the files into folders such that the directory `directory 
   ```bash
   export NITRC_IR_USERNAME=<USER>
   export PROJECT="ERICH"  # or "GENISIS"
-  export INPUT_FILE="subjects_${PROJ}.csv"
-  export DIRECTORY_NAME="./${PROJ}_data"
+  export INPUT_FILE="subjects_${PROJECT}.csv"
+  export DIRECTORY_NAME="./${PROJECT}_data"
   export SCAN_TYPE="" # Optional: Set to a specific type (e.g., "CT", "T1w") or leave empty for ALL
   ```
 2. Generate Input CSV
