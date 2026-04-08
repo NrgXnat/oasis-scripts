@@ -13,6 +13,8 @@
 - [Downloading PET Unified Pipeline (PUP) files](#downloading-pet-unified-pipeline-pup-files)
   * [download_pup/download_oasis_pup.sh](#download_pupdownload_oasis_pupsh)
   * [download_pup/./download_oasis_pup_files_by_partial_filename_match.sh](#download_pupdownload_oasis_pup_files_by_partial_filename_matchsh)
+- [Downloading iCDKP files](#download-icdkp-datasets-genisis-erich)
+  * [download_scans/download_strokeimaging_scans.sh](#download-icdkp-datasets-genisis-erich)
 - [Matching Up Session Data by Days From Entry](#matching-up-session-data-by-days-from-entry)
   * [session_matchup/oasis_data_matchup.R](#session_matchupoasis_data_matchupr)
 - [Detailed instructions on how to run these scripts](#detailed-instructions-on-how-to-run-these-scripts)
@@ -142,6 +144,29 @@ Required inputs:
 This script organizes the files into folders such that the directory `directory name/OAS30001_MR_d0129/` will contain all the Freesurfer data folders. 
 
 **NOTES:** Since the Freesurfer is linked with the MR ID, saving a Freesurfer and MR Scan folder in the same directory will cause both to be saved in a folder named (for example) OAS30001_MR_d0129. Make sure that you save your Freesurfer folders in a separate directory from the MR scans to prevent confusion and errors. Additionally, this Freesurfer download script will not differentiate between versions of Freesurfer. You will need to keep track of Freesurfer version when you create your ID list (whether the ID contains Freesurfer53, Freesurfer51, or Freesurfer50). 
+
+
+# Download iCDKP datasets (GENISIS, ERICH)
+
+1. Set environment variables
+  ```bash
+  export NITRC_IR_USERNAME=<USER>
+  export PROJECT="ERICH"  # or "GENISIS"
+  export INPUT_FILE="subjects_${PROJ}.csv"
+  export DIRECTORY_NAME="./${PROJ}_data"
+  export SCAN_TYPE="" # Optional: Set to a specific type (e.g., "CT", "T1w") or leave empty for ALL
+  ```
+2. Generate Input CSV
+  ```bash
+  curl -u $NITRC_IR_USERNAME -k "https://strokeimaging.wustl.edu/data/archive/projects/$PROJECT/experiments?format=csv" | cut -d, -f6 | grep -v "label" > $INPUT_FILE
+  ```
+
+3. Download scans
+  ```bash
+  ./download_scans/download_strokeimaging_scans.sh $INPUT_FILE $DIRECTORY_NAME $NITRC_IR_USERNAME $PROJECT "${SCAN_TYPE:-ALL}"
+  ```
+
+
 
 # Downloading PET Unified Pipeline (PUP) files
 
